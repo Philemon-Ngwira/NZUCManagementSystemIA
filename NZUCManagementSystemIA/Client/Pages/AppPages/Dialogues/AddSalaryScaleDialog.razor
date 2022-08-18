@@ -1,0 +1,27 @@
+﻿@using NZUCManagementSystemIA.Shared.Models
+@inherits SalaryScaleManagementBase
+
+<MudDialog>
+    <DialogContent>
+        <MudCard Class="mb-3">
+            <MudText Align="Align.Center" Typo="Typo.h5">ADD SALARY SCALE</MudText>
+        </MudCard>
+        <MudCard>
+            <MudCardContent>
+                <MudForm Model="salaryTable">
+                    <MudTextField @bind-Value="salaryTable.SalaryTier" Label="Enter Scale Name" Variant="Variant.Outlined"></MudTextField>
+                </MudForm>
+            </MudCardContent>
+        </MudCard>
+
+    </DialogContent>
+    <DialogActions>
+        <MudButton EndIcon="@Icons.Filled.Cancel" Variant="Variant.Filled" OnClick="Cancel" Color="Color.Error">Cancel</MudButton>
+         <MudButton EndIcon="@Icons.Filled.Save" Variant="Variant.Filled" Color="Color.Success">Save</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+@code {
+    [Parameter] public SalaryTable salary { get; set; } = new();
+}

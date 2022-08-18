@@ -1,0 +1,66 @@
+﻿@page "/Pages/AppPages/OperatingIncomeExpenseManagement"
+@using NZUCManagementSystemIA.Shared.Models
+@inherits OperatingIncomeExpenseManagementBase
+<MudCard Class="mb-3">
+        <MudText Align="Align.Center" Typo="Typo.h3">Operating Income And Expense Management</MudText>
+</MudCard>
+@if (operatingIncomeExpenses.Count() == 0)
+{
+    <MudTable Items="@operatingIncomeExpenses" Hover="true" Breakpoint="Breakpoint.Sm" Loading="true" LoadingProgressColor="Color.Secondary" >
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Operating Income And Expenses</MudText>
+            <MudSpacer />
+            <MudFab Icon="@Icons.Material.Filled.AddCircle" Color="Color.Info" Size="Size.Medium" OnClick="@((e) => OpenDialog(operatingIncomeExpense))"></MudFab>
+        
+            <MudSpacer />
+            <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+    </MudTable>
+    
+}
+else
+{
+    <MudTable ServerData="@(new Func<TableState, Task<TableData<OperatingIncomeExpense>>>(ServerReload))"
+          Hover="true" @ref="table" T="OperatingIncomeExpense" >
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Salary Scale Table</MudText>
+            <MudSpacer />
+            <MudFab Icon="@Icons.Material.Filled.AddCircle" Color="Color.Info" Size="Size.Medium" OnClick="@((e) => OpenDialog(operatingIncomeExpense))"></MudFab>
+        
+            <MudSpacer />
+            <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh><MudTableSortLabel SortLabel="ID_field" T="OperatingIncomeExpense">Id</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="Amount_field" T="OperatingIncomeExpense">Amount</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="TypeOfIncomeOrExpense_field" T="OperatingIncomeExpense">Income Or Expense</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="Reviewer_field" T="OperatingIncomeExpense">Reviewer</MudTableSortLabel></MudTh>
+            <MudTh>Action</MudTh>
+
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Id">@context.Id</MudTd>
+            <MudTd DataLabel="Amount">@context.Amount</MudTd>
+            <MudTd DataLabel="Income Or Expense">@context.IncomeExpenseOperatingTypeNavigation.OperatingType1</MudTd>
+            <MudTd DataLabel="Reviewer">@context.Reviewer.Employee.EmployeeName</MudTd>
+            <MudTd DataLabel="Action"> <MudFab Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Medium"></MudFab></MudTd>
+
+        </RowTemplate>
+        <NoRecordsContent>
+            <MudText>No matching records found</MudText>
+        </NoRecordsContent>
+        <LoadingContent>
+            <MudText>Loading...</MudText>
+        </LoadingContent>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+
+}
+
+@code {
+
+}

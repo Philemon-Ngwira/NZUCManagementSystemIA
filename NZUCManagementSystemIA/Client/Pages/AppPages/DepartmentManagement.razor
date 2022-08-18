@@ -1,0 +1,58 @@
+﻿@page "/Pages/AppPages/DepartmentManagement"
+@using NZUCManagementSystemIA.Shared.Models
+@inherits DepartmentManagementBase
+<MudCard Class="mb-3">
+    <MudCardHeader>
+        <MudText Align="Align.Center" Typo="Typo.h3">DepartmentManagement</MudText>
+
+    </MudCardHeader>
+
+</MudCard>
+@if (_departments.Count() == 0)
+{
+    <MudTable Items="@_departments" Hover="true" Breakpoint="Breakpoint.Sm" Loading="true" LoadingProgressColor="Color.Secondary" />
+}
+else
+{
+    <MudTable ServerData="@(new Func<TableState, Task<TableData<Departments_Table>>>(ServerReload))"
+          Hover="true" @ref="table" T="Departments_Table" OnRowClick="onRowClicked">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Departments</MudText>
+            <MudSpacer />
+            <MudFab Icon="@Icons.Material.Filled.AddCircle" Color="Color.Info" Size="Size.Medium" OnClick="@((e) => OpenDialog(departments))"></MudFab>
+
+            <MudSpacer />
+            <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh><MudTableSortLabel SortLabel="ID_field" T="Departments_Table">Id</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="DepartmentName_field" T="Departments_Table">DepartmentName</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="DepartmentCode_field" T="Departments_Table">DepartmentCode</MudTableSortLabel></MudTh>
+            <MudTh>Action</MudTh>
+
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Id">@context.Id</MudTd>
+            <MudTd DataLabel="DepartmentName">@context.DepartmentName</MudTd>
+            <MudTd DataLabel="DepartmentCode">@context.DepartmentCode</MudTd>
+            <MudTd DataLabel="Action"> <MudFab Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Medium"></MudFab></MudTd>
+
+        </RowTemplate>
+        <NoRecordsContent>
+            <MudText>No matching records found</MudText>
+        </NoRecordsContent>
+        <LoadingContent>
+            <MudText>Loading...</MudText>
+        </LoadingContent>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+    @*OnClick="@(() => DeleteUser(context.Id))" *@
+}
+
+
+@code {
+
+}

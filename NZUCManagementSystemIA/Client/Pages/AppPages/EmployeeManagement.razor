@@ -1,0 +1,53 @@
+﻿@page "/Pages/AppPages/EmployeeManagement"
+@using NZUCManagementSystemIA.Shared.Models
+@inherits EmployeeManagementBase
+
+<MudCard Class="mb-3">
+    <MudText Align="Align.Center" Typo="Typo.h2">Employee Management</MudText>
+</MudCard>
+@if(_employeeslist.Count() == 0)
+{
+      <MudTable Items="@_employeeslist" Hover="true" Breakpoint="Breakpoint.Sm" Loading="true" LoadingProgressColor="Color.Secondary" />
+}
+else
+{
+   <MudTable ServerData="@(new Func<TableState, Task<TableData<EmployeeTable>>>(ServerReload))"
+           Hover="true" @ref="table" T="EmployeeTable" OnRowClick="OnTableRowClicked">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">EmployeeTables</MudText>
+        <MudSpacer />
+        <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh><MudTableSortLabel SortLabel="ID_field" T="EmployeeTable">Id</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="CompanyID_field" T="EmployeeTable">EmployeeID</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="Name_field" T="EmployeeTable">EmployeeName</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="Department_field" T="EmployeeTable">Department</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="Gender_field" T="EmployeeTable">Gender</MudTableSortLabel></MudTh>
+         <MudTh><MudTableSortLabel SortLabel="SalaryScale_field" T="EmployeeTable">Salary</MudTableSortLabel></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Id">@context.Id</MudTd>
+        <MudTd DataLabel="CompanyID">@context.EmployeeID</MudTd>
+        <MudTd DataLabel="Name">@context.EmployeeName</MudTd>
+        <MudTd DataLabel="Department">@context.Department.DepartmentName</MudTd>
+        <MudTd DataLabel="Gender">@context.Gender.Gender</MudTd>
+         <MudTd DataLabel="Gender">@context.SalaryNavigation.SalaryTier</MudTd>
+    </RowTemplate>
+    <NoRecordsContent>
+        <MudText>No matching records found</MudText>
+    </NoRecordsContent>
+    <LoadingContent>
+        <MudText>Loading...</MudText>
+    </LoadingContent>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+ 
+}
+
+@code {
+
+}

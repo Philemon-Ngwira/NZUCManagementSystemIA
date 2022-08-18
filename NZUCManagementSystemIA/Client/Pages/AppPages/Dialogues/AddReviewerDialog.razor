@@ -1,0 +1,29 @@
+﻿@using NZUCManagementSystemIA.Shared.Models
+@inherits ReviewersManagementBase
+<MudDialog>
+    <DialogContent>
+        <MudText Typo="Typo.h6" Align="Align.Center">Select Employee to Become Reviewer</MudText>
+        <MudBreakpointProvider />
+        <MudForm Model="Reviewer">
+            <MudSelect T="EmployeeTable" @bind-Value="Employee" ToStringFunc="Employeeconverter" Variant="Variant.Outlined" Label="Select Employee">
+                @foreach (var item in _employees)
+                {
+                    <MudSelectItem T="EmployeeTable" Value="item">@item.EmployeeName</MudSelectItem>
+                }
+            </MudSelect>
+            <MudTextField @bind-Value="Employee.EmployeeID"  Label="EmployeeID" Variant="Variant.Outlined" ReadOnly="true"></MudTextField>
+            @*<MudTextField @bind-Value="Employee.Department.DepartmentName"  Label="Department" Variant="Variant.Outlined"  ReadOnly="true"></MudTextField>
+            <MudTextField @bind-Value="Employee.Gender.Gender"  Label="Gender" Variant="Variant.Outlined"  ReadOnly="true"></MudTextField>*@
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudDivider />
+        <MudButton ButtonType="ButtonType.Reset" Variant="Variant.Filled" Color="Color.Error" EndIcon="@Icons.Material.Filled.Cancel">Cancel</MudButton>
+        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Success" OnClick=" SaveReviewer" EndIcon="@Icons.Material.Filled.SaveAlt">Submit</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [Parameter] public ReviewersTable reviewers { get; set; } = new();
+
+}

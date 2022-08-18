@@ -1,0 +1,64 @@
+﻿@page "/Pages/AppPages/AddEmployee"
+@using NZUCManagementSystemIA.Shared.Models
+@inherits AddEmployeeBase
+<MudCard Style="mb-3">
+    <MudCardContent>
+        <MudText Align="Align.Center" Typo="Typo.h4">New Employee</MudText>
+    </MudCardContent>
+</MudCard>
+<EditForm Model="employee" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+    <MudTabs Outlined="true" Position="Position.Left" Rounded="true" Border="true"
+             ApplyEffectsToContainer="true" Class="mt-8" PanelClass="pa-6">
+        <MudTabPanel Text="Employee Information">
+            <MudGrid>
+                <MudItem xs="12">
+                    <MudCard>
+                        <MudCardContent>
+                            <MudTextField @bind-Value="employee.EmployeeName" Label="Employee Name" Variant="Variant.Outlined" />
+                            <MudSelect Dense="true" T="GenderTable" @bind-Value="employee.Gender" Label="Gender" OpenIcon="@Icons.Filled.Woman" AdornmentIcon="@Icons.Filled.Woman" Variant="Variant.Outlined">
+                                @foreach (var item in _genderlist)
+                                {
+                                    <MudSelectItem T="GenderTable" Value="@item">@item.Gender</MudSelectItem>
+                                }
+
+                            </MudSelect>
+                            <MudDatePicker Label="Date Of Birth" Color="Color.Success" @bind-Date="employee.DateOfBirth" Variant="Variant.Outlined" />
+                            <MudTextField @bind-Value="employee.NRC" Label="National Registration Number" Variant="Variant.Outlined" />
+                        </MudCardContent>
+                    </MudCard>
+                </MudItem>
+            </MudGrid>
+        </MudTabPanel>
+        <MudTabPanel Text="Job Information">
+            <MudGrid>
+                <MudItem xs="12">
+                    <MudCard>
+                        <MudCardContent>
+                            <MudTextField @bind-Value="employee.EmployeeID" Label="Company ID" Variant="Variant.Outlined" />
+                            <MudSelect Dense="true" T="Departments_Table" @bind-Value="employee.Department" Label="Department" AdornmentIcon="@Icons.Filled.Badge" Variant="Variant.Outlined">
+                                @foreach (var item in _departmentslist)
+                                {
+                                    <MudSelectItem T="Departments_Table" Value="item">@item.DepartmentName</MudSelectItem>
+                                }
+                            </MudSelect>
+                            <MudTextField @bind-Value="employee.JobDescription" Label="Job Description" Variant="Variant.Outlined" />
+                            <MudSelect Dense="true" T="SalaryTable" @bind-Value="employee.SalaryNavigation" Label="Salary Level" AdornmentIcon="@Icons.Filled.CurrencyExchange" Variant="Variant.Outlined">
+                                @foreach (var item in _salaryScalelist)
+                                {
+                                    <MudSelectItem T ="SalaryTable" Value="item">@item.SalaryTier</MudSelectItem>
+                                }
+                            </MudSelect>
+                            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="OnValidSubmit" FullWidth="true">Submit Employee</MudButton>
+                        </MudCardContent>
+                    </MudCard>
+                </MudItem>
+            </MudGrid>
+        </MudTabPanel>
+    </MudTabs>
+
+</EditForm>
+
+@code {
+
+}

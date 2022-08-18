@@ -1,0 +1,47 @@
+﻿@page "/Pages/AppPages/AddNewBudget"
+@using NZUCManagementSystemIA.Shared.Models
+@inherits AddNewBudgetBase
+<MudForm Model="yearlyBudget">
+    <MudCard Class="mb-3">
+        <MudText Align="Align.Center" Typo="Typo.h3">Add New Years Budgets</MudText>
+    </MudCard>
+    <MudCard>
+        <MudText Typo="Typo.h6">Fill in form</MudText>
+        <MudGrid>
+            <MudItem xs="6">
+                <MudSelect T="BudgetTypeTable" @bind-Value="_incomeExpensesType.TypeofBudget" Label="Select Budget Type" Variant="Variant.Filled" AnchorOrigin="Origin.BottomCenter" SelectedValuesChanged="OnBudgetTypeClicked">
+                    @foreach (var item in _budgettypes)
+                    {
+                        <MudSelectItem T="BudgetTypeTable" Value="item">@item.BudgetType</MudSelectItem>
+                    }
+
+                </MudSelect>
+            </MudItem>
+             <MudItem xs="6">
+                <MudSelect T="IncomeExpenseBudgetType" @bind-Value="_incomeExpensesType" ToStringFunc="IncomeExpesnseconverter"  Label="Select Budget Type" Variant="Variant.Filled" AnchorOrigin="Origin.BottomCenter">
+                    @foreach (var item in _incomeExpenses)
+                    {
+                        <MudSelectItem T="IncomeExpenseBudgetType" Value="item">@item.IncomeBudgetType</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+            <MudItem xs="6">
+                <MudDatePicker @bind-Date="yearlyBudget.YearStart" Label="Start Date"></MudDatePicker>
+            </MudItem>
+             <MudItem xs="6">
+                <MudDatePicker  @bind-Date="yearlyBudget.YearEnd" Label="Start EndDate"></MudDatePicker>
+            </MudItem>
+             <MudItem xs="6">
+                <MudNumericField @bind-Value="yearlyBudget.ActualBudget" Label="Enter Budget Amount"></MudNumericField>
+            </MudItem>
+        </MudGrid>
+        <MudCardActions>
+            <MudButton Variant="Variant.Filled" Color="Color.Error" EndIcon="@Icons.Material.Filled.Cancel">Cancel</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Success" EndIcon="@Icons.Material.Filled.SaveAlt" OnClick="OnSubmit">Submit</MudButton>
+        </MudCardActions>
+    </MudCard>
+</MudForm>
+
+@code {
+
+}

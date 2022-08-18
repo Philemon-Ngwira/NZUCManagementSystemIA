@@ -1,0 +1,79 @@
+﻿@using NZUCManagementSystemIA.Shared.Models
+
+@inherits OperatingIncomeExpenseManagementBase
+<MudDialog>
+    <DialogContent>
+        <MudCard>
+            <MudText Align="Align.Center" Typo="Typo.h6">Add Operating Income Or Expense </MudText>
+            <MudCardContent>
+
+                <MudForm Model="IncomeExpense">
+                    <MudGrid>
+                        <MudItem xs="6">
+                            <MudSelect T="OperatingType" @bind-Value="operatingType" ToStringFunc="Typeconverter" Label="Select If Income or Expense" Variant="Variant.Outlined" SelectedValuesChanged="OnOperatingTypeClicked"
+                                       Margin="Margin.Dense">
+                                @foreach (var item in _operatingTypes)
+                                {
+                                    <MudSelectItem T="OperatingType" Value="item">@item.OperatingType1</MudSelectItem>
+                                }
+                            </MudSelect>
+                        </MudItem>
+                        <MudItem xs="6">
+                            <MudSelect T="IncomeExpensesOperatingType" Label="Operating Type" @bind-Value="incomeExpensesOperatingType" ToStringFunc="converter" Variant="Variant.Outlined" SelectedValuesChanged="OnIncomeOperatingTypeClicked"
+                                       Margin="Margin.Dense">
+                                @foreach (var item in incomeExpensesOperatingTypes)
+                                {
+                                    <MudSelectItem T="IncomeExpensesOperatingType" Value="item">@item.IncomeExpenseType</MudSelectItem>
+                                }
+                            </MudSelect>
+                        </MudItem>
+                        @if (_hasConference == true)
+                        {
+                            <MudItem xs="6">
+                                <MudSelect T="ConferencesAndField" Label="Select Conference or Field" @bind-Value="IncomeExpense.Conference" ToStringFunc="Conferenceconverter" Variant="Variant.Outlined"
+                                       Margin="Margin.Dense">
+                                    @foreach (var item in conferencesAndFields)
+                                    {
+                                        <MudSelectItem T="ConferencesAndField" Value="item">@item.ConferenceName</MudSelectItem>
+                                    }
+                                </MudSelect>
+                            </MudItem>
+                        }
+                        <MudItem xs="6">
+                            <MudNumericField @bind-Value="IncomeExpense.Amount" Label="Enter Amount" Variant="Variant.Outlined" Margin="Margin.Dense"></MudNumericField>
+                        </MudItem>
+                        <MudItem xs="6">
+                            <MudDatePicker @bind-Date="IncomeExpense.DateMonth" Label="Select Month" Variant="Variant.Outlined" Margin="Margin.Dense"></MudDatePicker>
+                        </MudItem>
+                        <MudItem xs="6">
+                            <MudSelect T="ReviewersTable" Label="Select Reviewer" @bind-Value="IncomeExpense.Reviewer" ToStringFunc="Reviewerconverter" Variant="Variant.Outlined"
+                                       Margin="Margin.Dense">
+                                @foreach (var item in reviewers)
+                                {
+                                    <MudSelectItem T="ReviewersTable" Value="item">@item.Employee.EmployeeName</MudSelectItem>
+                                }
+                            </MudSelect>
+                        </MudItem>
+                    </MudGrid>
+                </MudForm>
+
+            </MudCardContent>
+        </MudCard>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Error" EndIcon="@Icons.Material.Filled.Cancel" OnClick="Cancel">Cancel</MudButton>
+        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Success" EndIcon="@Icons.Material.Filled.SaveAlt" OnClick="submit">Submit</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [Parameter] public OperatingIncomeExpense IncomeExpense { get; set; } = new OperatingIncomeExpense();
+
+    private void submit()
+    {
+        IncomeExpense.IncomeExpenseOperatingType = operatingType.Id;
+        operatingIncomeExpense = IncomeExpense;
+        Submit();
+
+    }
+}

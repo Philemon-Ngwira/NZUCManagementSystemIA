@@ -1,0 +1,91 @@
+﻿@page "/Pages/AppPages/PaymentsForm"
+@using NZUCManagementSystemIA.Shared.Models
+@inherits PaymentsFormBase
+<MudCard Class="mb-3">
+    <MudCardHeader>
+        <CardHeaderAvatar>
+            <MudIcon Icon="@Icons.Material.Filled.Paid"></MudIcon>
+        </CardHeaderAvatar>
+        <CardHeaderContent>
+            <MudText Color="Color.Primary" Align="Align.Center" Typo="Typo.h4"><strong>Request Payment</strong></MudText>
+        </CardHeaderContent>
+    </MudCardHeader>
+</MudCard>
+<MudCard Class="m-2">
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudText Color="Color.Primary" Align="Align.Left" Typo="Typo.h6">Fill In Required Information</MudText>
+        </CardHeaderContent>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudForm Model="ReviewTransactionTable">
+            <MudTabs Outlined="true" Position="Position.Left" Rounded="true" Border="true"
+                     ApplyEffectsToContainer="true" Class="mt-8" PanelClass="pa-6">
+                <MudTabPanel Text="Payment Information">
+                    <MudGrid>
+                        <MudItem xs="12">
+                            <MudSelect T="PaymentType" @bind-Value="ReviewTransactionTable.PaymentType" SelectedValuesChanged="OnPaymentTypeSelected" Label="Select Payment Type" Required="true" RequiredError="Select Payment Type" Variant="Variant.Outlined" Margin="Margin.Dense" AnchorOrigin="Origin.BottomCenter">
+                                @foreach (var item in _paymentTypes)
+                                {
+                                    <MudSelectItem T="PaymentType" Value="item">@item.PaymentType1</MudSelectItem>
+                                }
+                            </MudSelect>
+                        </MudItem>
+                        <MudItem xs="12">
+                            <MudSelect T="PaymentMethodTable" @bind-Value="ReviewTransactionTable.PaymentMethod" Label="Select Payment Method" Required="true" RequiredError="Select Payment Type" Variant="Variant.Outlined" Margin="Margin.Dense" AnchorOrigin="Origin.BottomCenter">
+                                @foreach (var item in _paymentMethods)
+                                {
+                                    <MudSelectItem T="PaymentMethodTable" Value="item">@item.PaymentMethod</MudSelectItem>
+                                }
+                            </MudSelect>
+                        </MudItem>
+                        @if (IsSalary == false)
+                        {
+                            <MudItem xs="12">
+                                <MudSelect T="Departments_Table" @bind-Value="ReviewTransactionTable.Department" Label="Select Department" Required="true" RequiredError="Select Employee" Variant="Variant.Outlined" Margin="Margin.Dense" AnchorOrigin="Origin.BottomCenter">
+                                    @foreach (var item in _departments_Tables)
+                                    {
+                                        <MudSelectItem T="Departments_Table" Value="item">@item.DepartmentName</MudSelectItem>
+                                    }
+                                </MudSelect>
+                            </MudItem>
+                        }
+                        @if (IsSalary == true)
+                        {
+                            <MudItem xs="12">
+                                <MudSelect T="EmployeeTable" @bind-Value="ReviewTransactionTable.Employee" Label="Select Employee" Required="true" RequiredError="Select Employee" Variant="Variant.Outlined" Margin="Margin.Dense" AnchorOrigin="Origin.BottomCenter">
+                                    @foreach (var item in _employees)
+                                    {
+                                        <MudSelectItem T="EmployeeTable" Value="item">@item.EmployeeName</MudSelectItem>
+                                    }
+                                </MudSelect>
+                            </MudItem>
+                        }
+
+                        <MudItem xs="12">
+                            <MudSelect T="ReviewersTable" @bind-Value="ReviewTransactionTable.Reviewer" Label="Reviewer" Required="true" RequiredError="No Reviewer Selected" Variant="Variant.Outlined" Margin="Margin.Dense" AnchorOrigin="Origin.BottomCenter">
+                                @foreach (var item in _reviewersTables)
+                                {
+                                    <MudSelectItem T="ReviewersTable" Value="item">@item.Employee.EmployeeName</MudSelectItem>
+                                }
+                            </MudSelect>
+                        </MudItem>
+                    </MudGrid>
+                </MudTabPanel>
+                <MudTabPanel Text="Payment Details">
+                    <MudGrid>
+                        <MudItem xs="12">
+                            <MudNumericField HideSpinButtons="true" T="int?" @bind-Value="ReviewTransactionTable.Amount" Label="Amount" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                        </MudItem>
+                        <MudItem xs="12">
+                            <MudTextField T="string" Label="Reviewer Comment" Variant="Variant.Outlined" @bind-Text="ReviewTransactionTable.Reason" Lines="3" />
+                        </MudItem>
+                        <MudButton Color="Color.Success" Variant="Variant.Filled" FullWidth="true" ButtonType="ButtonType.Submit" EndIcon="@Icons.Material.Filled.Save" OnClick="Save">Submit</MudButton>
+                    </MudGrid>
+                </MudTabPanel>
+            </MudTabs>
+
+        </MudForm>
+    </MudCardContent>
+</MudCard>
+

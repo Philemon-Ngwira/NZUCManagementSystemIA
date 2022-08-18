@@ -1,0 +1,24 @@
+﻿@using NZUCManagementSystemIA.Shared.Models
+@inherits ConferencesManagementBase
+<MudDialog>
+    <DialogContent>
+        <MudText Align="Align.Center" Color="Color.Primary" Typo="Typo.h4"><strong>Edit Conference Conference</strong></MudText>
+
+        <MudTextField Variant="Variant.Outlined" @bind-Value="conference.ConferenceName" Label="Conference or Field Name"></MudTextField>
+        <MudTextField Variant="Variant.Outlined" @bind-Value="conference.ConferenceCode" Label="Conference or Field Code"></MudTextField>
+    </DialogContent>
+    <DialogActions>
+         <MudButton ButtonType="ButtonType.Reset" Variant="Variant.Filled" Color="Color.Error" EndIcon="@Icons.Material.Filled.Cancel" OnClick="Cancel">Cancel</MudButton>
+        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Success" EndIcon="@Icons.Material.Filled.SaveAlt" OnClick="submit">Submit</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [Parameter] public ConferencesAndField conference { get; set; } = new();
+
+    private void submit()
+    {
+        conferenceAndField = conference;
+        CommitEdit();
+    }
+}

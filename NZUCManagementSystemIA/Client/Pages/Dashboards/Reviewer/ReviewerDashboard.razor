@@ -1,0 +1,112 @@
+﻿@page "/Pages/Dashboards/Reviewer/ReviewerDashboard"
+@using NZUCManagementSystemIA.Shared.Models
+
+@inherits ReviewerDashboardBase
+<MudCard Class="mb-3">
+    <MudText Align="Align.Center" Color="Color.Primary" Typo="Typo.h3">RIVIEWER DASHBOARD</MudText>
+</MudCard>
+<MudContainer>
+    <MudGrid>
+        <MudItem xs="12" sm="6">
+            <MudPaper Class="d-flex flex-row pt-6 pb-4" Style="height:100px;">
+                <MudIcon Icon="@Icons.Filled.CurrencyExchange" Color="Color.Success" Class="mx-4" Style="width:54px; height:54px;"></MudIcon>
+                <div>
+                    <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">Current Income</MudText>
+                    <MudText Typo="Typo.h6">@operatingIncomeDisplay</MudText>
+                </div>
+            </MudPaper>
+
+        </MudItem>
+        <MudItem xs="12" sm="6">
+            <MudPaper Class="d-flex flex-row pt-6 pb-4" Style="height:100px;">
+                <MudIcon Icon="@Icons.Filled.MoneyOff" Color="Color.Error" Class="mx-4" Style="width:54px; height:54px;"></MudIcon>
+                <div>
+                    <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">Current Expense</MudText>
+                    <MudText Typo="Typo.h6">@operatingExpenseDisplay</MudText>
+                </div>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" sm="6">
+            <MudPaper Class="d-flex flex-row pt-6 pb-4" Style="height:100px;">
+                <MudIcon Icon="@Icons.Filled.Money" Color="Color.Info" Class="mx-4" Style="width:54px; height:54px;"></MudIcon>
+                <div>
+                    <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">Make Payment</MudText>
+                    <MudButton ButtonType="ButtonType.Submit" EndIcon="@Icons.Material.Filled.NavigateNext" Color="Color.Primary" OnClick="NavigateToPaymentPage">Request Payment</MudButton>
+                </div>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="6">
+            <MudPaper Class="d-flex flex-row pt-6 pb-4" Style="height:100px;">
+                <MudIcon Icon="@Icons.Filled.Money" Color="Color.Info" Class="mx-4" Style="width:54px; height:54px;"></MudIcon>
+                <div>
+                    <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">RecordIncome</MudText>
+                    <MudButton ButtonType="ButtonType.Submit" EndIcon="@Icons.Material.Filled.NavigateNext" OnClick="NavigateToOperatingIncome" Color="Color.Success">Record Income</MudButton>
+                </div>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12">
+           
+            <MudTable ServerData="@(new Func<TableState, Task<TableData<ReviewTransactionTable>>>(ServerReload))"
+                      Hover="true" @ref="table" T="ReviewTransactionTable">
+                <ToolBarContent>
+                    <MudText Typo="Typo.h6">Current Pending Payments</MudText>
+                    <MudSpacer />
+                    <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
+                                  AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                </ToolBarContent>
+                <HeaderContent>
+                    <MudTh><MudTableSortLabel SortLabel="ID_field" T="ReviewTransactionTable">Id</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortLabel="Amount_field" T="ReviewTransactionTable">Amount</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortLabel="PaymentMethod_field" T="ReviewTransactionTable">Payment Method</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortLabel="PaymentType_field" T="ReviewTransactionTable">Payment Type</MudTableSortLabel></MudTh>
+                    <MudTh>Reviewer</MudTh>
+                    <MudTh>Status</MudTh>
+
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Id">@context.id</MudTd>
+                    <MudTd DataLabel="Amount">@context.Amount</MudTd>
+                    <MudTd DataLabel="Payment Method">@context.PaymentMethod.PaymentMethod</MudTd>
+                    <MudTd DataLabel="Payment Type">@context.PaymentType.PaymentType1</MudTd>
+                    <MudTd DataLabel="Reviewer">@context.Reviewer.Employee.EmployeeName</MudTd>
+                    @if (context.Authorized == null)
+                    {
+                        <MudTd DataLabel="Status"><MudChip Color="Color.Default">Pending Approval</MudChip></MudTd>
+                    }
+                    else if (context.Authorized == "Authorized")
+                    {
+                        <MudTd DataLabel="Status"><MudChip Color="Color.Success">Approved</MudChip></MudTd>
+                    }
+                    else
+                    {
+                        <MudTd DataLabel="Status"><MudChip Color="Color.Error">Denied</MudChip></MudTd>
+                    }
+
+
+
+                </RowTemplate>
+                <NoRecordsContent>
+                    <MudText>No matching records found</MudText>
+                </NoRecordsContent>
+                <LoadingContent>
+                    <MudText>Loading...</MudText>
+                </LoadingContent>
+                <PagerContent>
+                    <MudTablePager />
+                </PagerContent>
+            </MudTable>
+        </MudItem>
+        <MudItem xs="12">
+            <MudPaper Class="d-flex flex-row pt-6 pb-4">
+                <MudDatePicker PickerVariant="PickerVariant.Static" Orientation="Orientation.Landscape" Date="@(DateTime.Today)" />
+            </MudPaper>
+        </MudItem>
+
+    </MudGrid>
+</MudContainer>
+
+
+@code {
+
+}

@@ -1,0 +1,51 @@
+﻿@page "/Pages/Dashboards/Authorizer/AuthorizerDashboard"
+@using NZUCManagementSystemIA.Shared.Models
+@inherits AuthorizerDashboardBase
+
+<MudCard Class="mb-3">
+    <MudText Align="Align.Center" Color="Color.Primary" Typo="Typo.h3">Authorizer Dashboard</MudText>
+</MudCard>
+<MudPaper Class="mb-3">
+    <MudText Typo="Typo.h6" Color="Color.Success">Welcome Back !</MudText>
+</MudPaper>
+
+
+
+<MudTable ServerData="@(new Func<TableState, Task<TableData<ReviewTransactionTable>>>(ServerReload))"
+          Hover="true" @ref="table" T="ReviewTransactionTable">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Current Pending Payments</MudText>
+        <MudSpacer />
+        <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh><MudTableSortLabel SortLabel="ID_field" T="ReviewTransactionTable">Id</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="Amount_field" T="ReviewTransactionTable">Amount</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="PaymentMethod_field" T="ReviewTransactionTable">Payment Method</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="PaymentType_field" T="ReviewTransactionTable">Payment Type</MudTableSortLabel></MudTh>
+        <MudTh>Reviewer</MudTh>
+        <MudTh>Action</MudTh>
+
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Id">@context.id</MudTd>
+        <MudTd DataLabel="Amount">@context.Amount</MudTd>
+        <MudTd DataLabel="Payment Method">@context.PaymentMethod.PaymentMethod</MudTd>
+        <MudTd DataLabel="Payment Type">@context.PaymentType.PaymentType1</MudTd>
+        <MudTd DataLabel="Reviewer">@context.Reviewer.Employee.EmployeeName</MudTd>
+        <MudTd DataLabel="Action"> <MudButton StartIcon="@Icons.Material.Filled.RateReview" Variant="Variant.Filled" Color="Color.Info" Size="Size.Medium" OnClick="@((e) => OpenDialog(context.id))">Review</MudButton></MudTd>
+
+    </RowTemplate>
+    <NoRecordsContent>
+        <MudText>No matching records found</MudText>
+    </NoRecordsContent>
+    <LoadingContent>
+        <MudText>Loading...</MudText>
+    </LoadingContent>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+
+

@@ -1,0 +1,103 @@
+﻿{
+   "CodeGenerationMode": 2,
+   "ContextClassName": "NZUC MANAGEMENT SYSTEMContext",
+   "ContextNamespace": null,
+   "DefaultDacpacSchema": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": false,
+   "ModelNamespace": null,
+   "OutputContextPath": null,
+   "OutputPath": "Data",
+   "ProjectRootNamespace": "Domain",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 0,
+   "SelectedToBeGenerated": 1,
+   "Tables": [
+      {
+         "Name": "[dbo].[AuthorizerTable]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[BudgetTypeTable]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ConferencesAndField]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Departments Table]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[EmployeeTable]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[GenderTable]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[IncomeExpenseBudgetTypes]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[IncomeExpensesOperatingTypes]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[OperatingIncomeExpenses]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[OperatingTypes]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[PaymentMethodTable]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[PaymentTypes]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ReviewersTable]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ReviewTransactionTable]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[SalaryTable]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[TransactionTable]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[YearlyBudgetTable]",
+         "ObjectType": 0
+      }
+   ],
+   "UiHint": "PHILEMONNGWIRA\\SQLEXPRESS01.NZUC MANAGEMENT SYSTEM",
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": true,
+   "UseDbContextSplitting": false,
+   "UseFluentApiOnly": false,
+   "UseHandleBars": false,
+   "UseHierarchyId": false,
+   "UseInflector": true,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": false,
+   "UseNoConstructor": false,
+   "UseNoDefaultConstructor": false,
+   "UseNoNavigations": false,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": false,
+   "UseSchemaFolders": false,
+   "UseSpatial": false
+}

@@ -1,0 +1,70 @@
+﻿@page "/Pages/AppPages/AuthorizerManagement"
+@using NZUCManagementSystemIA.Shared.Models
+@inherits AuthorizerManagementBase
+
+
+
+<MudCard Class="mb-3">
+    <MudCardHeader>
+        <MudText Align="Align.Center" Typo="Typo.h3">Reviewers Management</MudText>
+
+    </MudCardHeader>
+
+</MudCard>
+@if (_authorizers.Count() == 0)
+{
+    <MudTable Items="@_authorizers" Hover="true" Breakpoint="Breakpoint.Sm" Loading="true" LoadingProgressColor="Color.Secondary">
+        <ToolBarContent>
+            <MudFab Icon="@Icons.Material.Filled.AddCircle" Color="Color.Info" Size="Size.Medium" OnClick="@((e) => OpenDialog(Authorizer))" ></MudFab>
+        </ToolBarContent>
+    </MudTable>
+
+
+}
+else
+{
+    <MudTable ServerData="@(new Func<TableState, Task<TableData<AuthorizerTable>>>(ServerReload))"
+          Hover="true" @ref="table" T="AuthorizerTable">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Current Authorizers</MudText>
+            <MudSpacer />
+            <MudFab Icon="@Icons.Material.Filled.AddCircle" Color="Color.Info" Size="Size.Medium" OnClick="@((e) => OpenDialog(Authorizer))" ></MudFab>
+
+            <MudSpacer />
+            <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh><MudTableSortLabel SortLabel="ID_field" T="AuthorizerTable">Id</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="AuthorizerName_field" T="AuthorizerTable">Name</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="AuthorizerEmployeeID_field" T="AuthorizerTable">EmployeeID</MudTableSortLabel></MudTh>
+
+            <MudTh>Action</MudTh>
+
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Id">@context.Id</MudTd>
+            <MudTd DataLabel="Name">@context.AuthorizerName.EmployeeName</MudTd>
+            <MudTd DataLabel="EmployeeID">@context.AuthorizerName.EmployeeID</MudTd>
+
+            <MudTd DataLabel="Action"> <MudFab Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Medium"></MudFab></MudTd>
+
+        </RowTemplate>
+        <NoRecordsContent>
+            <MudText>No matching records found</MudText>
+        </NoRecordsContent>
+        <LoadingContent>
+            <MudText>Loading...</MudText>
+        </LoadingContent>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+
+    // OnClick="@((e) => OpenDialog(Reviewer))"
+    //OnRowClick="OnRowClicked"
+}
+
+@code {
+
+}

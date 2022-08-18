@@ -1,0 +1,136 @@
+﻿@page "/"
+
+@inherits IndexBase
+
+<MudCarousel Class="mud-width-full" Style="height:200px;" TData="object" AutoCycle="true">
+    <MudCarouselItem Color="Color.Primary" Transition="Transition.Fade" CustomTransitionEnter="rotateIn" CustomTransitionExit="rotateOut">
+        <div class="d-flex mud-width-full" style="height:100%">
+            <MudImage ObjectFit="ObjectFit.Cover" Width="1920" Src="images/Office1.png" Alt="Kitwe HQ" Elevation="25" Class="rounded-lg" />
+        </div>
+    </MudCarouselItem>
+    <MudCarouselItem Color="Color.Secondary" Transition="Transition.Fade" CustomTransitionEnter="rotateIn" CustomTransitionExit="rotateOut">
+        <div class="d-flex mud-width-full" style="height:100%">
+            <MudImage ObjectFit="ObjectFit.Cover" Width="1920" Src="images/Office2.png" Alt="Kitwe HQ" Elevation="25" Class="rounded-lg" />
+        </div>
+    </MudCarouselItem>
+    <MudCarouselItem Color="Color.Tertiary" Transition="Transition.Fade" CustomTransitionEnter="rotateIn" CustomTransitionExit="rotateOut">
+        <div class="d-flex mud-width-full" style="height:100%">
+            <MudImage ObjectFit="ObjectFit.Cover" Width="1920" Src="images/Offiice3.png" Alt="Kitwe HQ" Elevation="25" Class="rounded-lg" />
+        </div>
+    </MudCarouselItem>
+</MudCarousel>
+<MudText Typo="Typo.h3">Dashboard</MudText>
+<AuthorizeView>
+    <Authorized>
+        <MudGrid>
+    <MudItem xs="12" sm="6" md="3">
+        <MudPaper Class="d-flex flex-row pt-6 pb-4" Style="height:100px;">
+            <MudIcon Icon="@Icons.Filled.AttachMoney" Color="Color.Success" Class="mx-4" Style="width:54px; height:54px;"></MudIcon>
+            <div>
+                <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">Total Income Budget</MudText>
+                @if (totalIncomeYearBudget == null)
+                {
+                    <MudText>Getting Income Budgets</MudText>
+                }
+                else
+                {
+                    <MudText Typo="Typo.h5">ZMW @IncomeBudgetDisplay</MudText>
+
+                }
+
+            </div>
+        </MudPaper>
+    </MudItem>
+
+    <MudItem xs="12" sm="6" md="3">
+        <MudPaper Class="d-flex flex-row pt-6 pb-4" Style="height:100px;">
+            <MudIcon Icon="@Icons.Filled.CurrencyExchange" Color="Color.Error" Class="mx-4" Style="width:54px; height:54px;"></MudIcon>
+            <div>
+                <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">Total Expense Budget</MudText>
+                <MudText Typo="Typo.h5">8,000,000</MudText>
+            </div>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="3">
+        <MudPaper Class="d-flex flex-row pt-6 pb-4" Style="height:100px;">
+            <MudIcon Icon="@Icons.Filled.Loop" Color="Color.Success" Class="mx-4" Style="width:54px; height:54px;"></MudIcon>
+            <div>
+                <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">Current Operating Income</MudText>
+                <MudText Typo="Typo.h5">ZMW @operatingIncomeDisplay</MudText>
+            </div>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="3">
+        <MudPaper Class="d-flex flex-row pt-6 pb-4" Style="height:100px;">
+            <MudIcon Icon="@Icons.Filled.People" Color="Color.Info" Class="mx-4" Style="width:54px; height:54px;"></MudIcon>
+            <div>
+                <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">Current Employees</MudText>
+                <MudText Typo="Typo.h5">@totalEmployees</MudText>
+            </div>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12">
+        <MudPaper>
+            <MudText Typo="Typo.subtitle1" Color="Color.Primary"><strong><i>NZUC Income And Expense Graph</i></strong></MudText>
+            @if (Series.Count() == 0)
+            {
+                <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" Striped="true" />
+            }
+            else
+            {
+                <MudChart ChartType="ChartType.Line" ChartSeries="@Series" @bind-SelectedIndex="Index" XAxisLabels="@XAxisLabels" Width="100%" Height="550px"></MudChart>
+            }
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="6">
+        <MudPaper Class="pa-4">
+            <MudText>Total Income:@IncomeDisplay</MudText>
+            <MudText>Total Expense:@ExpenseDisplay</MudText>
+            @if (operatingIncomeExpenses.Count() == 0)
+            {
+                <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" Striped="true" />
+            }
+            else
+            {
+                <MudChart ChartType="ChartType.Donut" Width="300px" Height="300px" InputData="@incomeExpensedata" InputLabels="@labels">
+                </MudChart>
+            }
+
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="6">
+        <MudPaper Class="pa-4">
+            <MudText Typo="Typo.subtitle1" Color="Color.Primary"><strong><i>Income By Conference</i></strong></MudText>
+            @if (_conferences.Count() == 0)
+            {
+                <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" Striped="true" />
+            }
+            else
+            {
+                <MudChart ChartType="ChartType.Pie" Width="280px" Height="280px" InputData="@conferenceIncomeData" InputLabels="@ConferenceNames"></MudChart>
+
+            }
+
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="7">
+        <MudPaper>
+            <MudText>Expense Data by DeptComing Soon.....</MudText>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="5">
+        <MudText>CurrentDate</MudText>
+        <MudDatePicker PickerVariant="PickerVariant.Static" Orientation="Orientation.Landscape" Date="@(DateTime.UtcNow)" />
+    </MudItem>
+</MudGrid>
+    </Authorized>
+    <NotAuthorized>
+        <MudCard Class="mb-3">
+            <MudText Typo="Typo.subtitle1">LogIn/SignUp To Access</MudText>
+            <LoginDisplay />
+        </MudCard>
+    </NotAuthorized>
+
+
+</AuthorizeView>
+

@@ -1,0 +1,35 @@
+﻿@using NZUCManagementSystemIA.Shared.Models
+@inherits AuthorizerManagementBase
+
+<MudDialog>
+
+    <DialogContent>
+        <MudCard Class="mb-3">
+            <MudText Typo="Typo.h5" Align="Align.Center" Color="Color.Primary">Add Authorizer</MudText>
+        </MudCard>
+        <MudSelect T="EmployeeTable" @bind-Value="employee" ToStringFunc="Employeeconverter" Variant="Variant.Outlined" Label="Select Employee">
+            @foreach (var item in _employees)
+            {
+                <MudSelectItem T="EmployeeTable" Value="item">@item.EmployeeName</MudSelectItem>
+            }
+        </MudSelect>
+        <MudTextField @bind-Value="employee.EmployeeID" Label="EmployeeID" Variant="Variant.Outlined" ReadOnly="true"></MudTextField>
+    </DialogContent>
+    <DialogActions>
+        <MudButton ButtonType="ButtonType.Reset" Variant="Variant.Filled" Color="Color.Error" EndIcon="@Icons.Material.Filled.Cancel" OnClick="Cancel">Cancel</MudButton>
+        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Success" EndIcon="@Icons.Material.Filled.SaveAlt" OnClick="Submitted">Submit</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [Parameter] public AuthorizerTable authorizer { get; set; } = new();
+
+    private void Submitted()
+    {
+        authorizer.AuthorizerName = employee;
+        authorizer.AuthorizerNameId = authorizer.AuthorizerName.Id;
+        authorizer.AuthorizerName = null;
+        Authorizer = authorizer;
+        Submit();
+    }
+}

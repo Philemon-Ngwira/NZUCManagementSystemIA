@@ -1,0 +1,103 @@
+﻿@using NZUCManagementSystemIA.Shared.Models
+@inherits AuthorizerDashboardBase
+<MudDialog>
+    <DialogContent>
+        <MudCard Class="m-2">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Color="Color.Primary" Align="Align.Center" Typo="Typo.h5">Review Transaction</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudForm Model="Transaction">
+                    <MudTabs Outlined="true" Position="Position.Left" Rounded="true" Border="true"
+                             ApplyEffectsToContainer="true" Class="mt-8" PanelClass="pa-6">
+                        <MudTabPanel Text="Payment Information">
+                            <MudGrid>
+                                <MudItem xs="12" sm="6">
+                                    <MudSelect T="PaymentType" @bind-Value="Transaction.PaymentType" ToStringFunc="PaymentTypeconverter" Label="Select Payment Type" Variant="Variant.Outlined" Margin="Margin.Dense" AnchorOrigin="Origin.BottomCenter" ReadOnly="true">
+                                        @foreach (var item in _paymentTypes)
+                                        {
+                                            <MudSelectItem T="PaymentType" Value="item">@item.PaymentType1</MudSelectItem>
+                                        }
+                                    </MudSelect>
+                                </MudItem>
+                                <MudItem xs="12" sm="6">
+                                    <MudSelect T="PaymentMethodTable" @bind-Value="Transaction.PaymentMethod" ToStringFunc="PaymentMethodconverter" Label="Select Payment Method" Variant="Variant.Outlined" Margin="Margin.Dense" AnchorOrigin="Origin.BottomCenter" ReadOnly="true">
+                                        @foreach (var item in _paymentMethods)
+                                        {
+                                            <MudSelectItem T="PaymentMethodTable" Value="item">@item.PaymentMethod</MudSelectItem>
+                                        }
+                                    </MudSelect>
+                                </MudItem>
+                                <MudItem xs="12" sm="6">
+                                    <MudSelect T="ReviewersTable" @bind-Value="Transaction.Reviewer" Label="Reviewer" ToStringFunc="Reviewerconverter" Variant="Variant.Outlined" Margin="Margin.Dense" AnchorOrigin="Origin.BottomCenter" ReadOnly="true">
+                                        @foreach (var item in _reviewersTables)
+                                        {
+                                            <MudSelectItem T="ReviewersTable" Value="item">@item.Employee.EmployeeName</MudSelectItem>
+                                        }
+                                    </MudSelect>
+                                </MudItem>
+                                @if (Transaction.Employee == null)
+                                {
+                                    <MudItem xs="12" sm="6">
+                                        <MudSelect T="Departments_Table" @bind-Value="Transaction.Department" ToStringFunc="Departmentconverter" Label="Select Department" Variant="Variant.Outlined" Margin="Margin.Dense" AnchorOrigin="Origin.BottomCenter" ReadOnly="true">
+                                            @foreach (var item in _departments_Tables)
+                                            {
+                                                <MudSelectItem T="Departments_Table" Value="item">@item.DepartmentName</MudSelectItem>
+                                            }
+                                        </MudSelect>
+                                    </MudItem>
+                                }
+                                @if (Transaction.Employee != null)
+                                {
+                                    <MudItem xs="12" sm="6">
+                                        <MudSelect T="EmployeeTable" @bind-Value="Transaction.Employee" ToStringFunc="Employeeconverter" Label="Select Employee" Variant="Variant.Outlined" Margin="Margin.Dense" AnchorOrigin="Origin.BottomCenter" ReadOnly="true">
+                                            @foreach (var item in _employees)
+                                            {
+                                                <MudSelectItem T="EmployeeTable" Value="item">@item.EmployeeName</MudSelectItem>
+                                            }
+                                        </MudSelect>
+                                    </MudItem>
+                                }
+
+                            </MudGrid>
+                        </MudTabPanel>
+                        <MudTabPanel Text="Payment Details">
+                            <MudGrid>
+                                <MudItem xs="12" sm="6">
+                                    <MudNumericField HideSpinButtons="true" T="int?" @bind-Value="Transaction.Amount" Label="Amount" ReadOnly="true" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                                </MudItem>
+                                <MudItem xs="12" sm="6">
+                                    <MudTextField T="string" Label="Reviewer Comment" ReadOnly="true" Variant="Variant.Outlined" @bind-Text="Transaction.Reason" Lines="3" />
+                                </MudItem>
+                            </MudGrid>
+                        </MudTabPanel>
+                    </MudTabs>
+
+                </MudForm>
+            </MudCardContent>
+        </MudCard>
+    </DialogContent>
+    <DialogActions>
+        <MudButton ButtonType="ButtonType.Reset" Color="Color.Error" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Cancel" OnClick="Cancel">Reject</MudButton>
+        <MudButton ButtonType="ButtonType.Submit" Color="Color.Success" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Approval" OnClick="submit">Authorize</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [Parameter] public ReviewTransactionTable Transaction { get; set; } = new();
+
+    private void submit()
+    {
+        Transaction.Authorized = "Authorized";
+        ReviewTransactionTable = Transaction;
+        Authorize();
+    }
+    private void Cancel()
+    {
+        Transaction.Authorized = "Rejected";
+        ReviewTransactionTable = Transaction;
+        Reject();
+    }
+}

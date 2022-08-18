@@ -1,0 +1,57 @@
+﻿@page "/Pages/AppPages/SalaryScaleManagement"
+@using NZUCManagementSystemIA.Shared.Models
+
+@inherits SalaryScaleManagementBase
+
+<MudCard Class="mb-3">
+    <MudCardHeader>
+        <MudText Align="Align.Center" Typo="Typo.h3">Salary Scale Management</MudText>
+
+    </MudCardHeader>
+
+</MudCard>
+@if (_salaries.Count() == 0)
+{
+    <MudTable Items="@_salaries" Hover="true" Breakpoint="Breakpoint.Sm" Loading="true" LoadingProgressColor="Color.Secondary" />
+}
+else
+{
+    <MudTable ServerData="@(new Func<TableState, Task<TableData<SalaryTable>>>(ServerReload))"
+          Hover="true" @ref="table" T="SalaryTable" OnRowClick="OnRowClicked">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Salary Scale Table</MudText>
+            <MudSpacer />
+            <MudFab Icon="@Icons.Material.Filled.AddCircle" Color="Color.Info" Size="Size.Medium" OnClick="@((e) => OpenDialog(salaryTable))"></MudFab>
+           
+            <MudSpacer />
+            <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh><MudTableSortLabel SortLabel="ID_field" T="SalaryTable">Id</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="Scale_field" T="SalaryTable">Scale</MudTableSortLabel></MudTh>
+            <MudTh>Action</MudTh>
+
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Id">@context.Id</MudTd>
+            <MudTd DataLabel="Scale">@context.SalaryTier</MudTd>
+            <MudTd DataLabel="Action"> <MudFab Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Medium" OnClick="@(() => DeleteUser(context.Id))"></MudFab></MudTd>
+
+        </RowTemplate>
+        <NoRecordsContent>
+            <MudText>No matching records found</MudText>
+        </NoRecordsContent>
+        <LoadingContent>
+            <MudText>Loading...</MudText>
+        </LoadingContent>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+
+}
+
+@code {
+
+}

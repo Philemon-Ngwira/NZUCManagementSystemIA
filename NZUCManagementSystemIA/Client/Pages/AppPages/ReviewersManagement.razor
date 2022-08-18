@@ -1,0 +1,68 @@
+﻿@page "/Pages/AppPages/ReviewersManagement"
+@using NZUCManagementSystemIA.Shared.Models
+@inherits ReviewersManagementBase
+
+
+<MudCard Class="mb-3">
+    <MudCardHeader>
+        <MudText Align="Align.Center" Typo="Typo.h3">Reviewers Management</MudText>
+
+    </MudCardHeader>
+
+</MudCard>
+@if (_reviewers.Count() == 0)
+{
+    <MudTable Items="@_reviewers" Hover="true" Breakpoint="Breakpoint.Sm" Loading="true" LoadingProgressColor="Color.Secondary">
+        <ToolBarContent>
+
+            <MudFab Icon="@Icons.Material.Filled.AddCircle" Color="Color.Info" Size="Size.Medium" OnClick="@((e) => OpenDialog(Reviewer))"></MudFab>
+        </ToolBarContent>
+    </MudTable>
+
+
+}
+else
+{
+    <MudTable ServerData="@(new Func<TableState, Task<TableData<ReviewersTable>>>(ServerReload))"
+          Hover="true" @ref="table" T="ReviewersTable" OnRowClick="OnRowClicked">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Current Reviewers</MudText>
+            <MudSpacer />
+            <MudFab Icon="@Icons.Material.Filled.AddCircle" Color="Color.Info" Size="Size.Medium" OnClick="@((e) => OpenDialog(Reviewer))"></MudFab>
+
+            <MudSpacer />
+            <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh><MudTableSortLabel SortLabel="ID_field" T="ReviewersTable">Id</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="ReviewerName_field" T="ReviewersTable">Name</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="ReviewerEmployeeID_field" T="ReviewersTable">EmployeeID</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="Department_field" T="ReviewersTable">Department</MudTableSortLabel></MudTh>
+            <MudTh>Action</MudTh>
+
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Id">@context.Id</MudTd>
+            <MudTd DataLabel="Name">@context.Employee.EmployeeName</MudTd>
+            <MudTd DataLabel="EmployeeID">@context.Employee.EmployeeID</MudTd>
+            <MudTd DataLabel="Department">@context.Employee.Department.DepartmentName</MudTd>
+            <MudTd DataLabel="Action"> <MudFab Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Medium"></MudFab></MudTd>
+
+        </RowTemplate>
+        <NoRecordsContent>
+            <MudText>No matching records found</MudText>
+        </NoRecordsContent>
+        <LoadingContent>
+            <MudText>Loading...</MudText>
+        </LoadingContent>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+    //OnClick="@(() => DeleteUser(context.Id))"
+}
+
+@code {
+
+}
