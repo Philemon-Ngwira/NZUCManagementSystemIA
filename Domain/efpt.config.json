@@ -74,6 +74,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[TransactionStatus]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[TransactionTable]",
          "ObjectType": 0
       },

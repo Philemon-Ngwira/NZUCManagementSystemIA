@@ -1,0 +1,149 @@
+﻿@using NZUCManagementSystemIA.Client.Interfaces
+@using NZUCManagementSystemIA.Shared.Models
+@inherits ReviewerDashboardBase
+
+<MudDialog>
+    <DialogContent>
+        <MudCard Class="mb-3">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Color="Color.Primary" Align="Align.Center" Typo="Typo.h5">Review Transaction</MudText>
+                    @if (Transaction.Authorized == null)
+                    {
+                        <MudAlert Severity="Severity.Info">This Transaction is Awaiting Approval</MudAlert>
+                    }
+                    else if (Transaction.Authorized == "Authorized")
+                    {
+                        <MudAlert Severity="Severity.Success">Transaction Approved!</MudAlert>
+                    }
+                    else
+                    {
+                        <MudAlert Severity="Severity.Error">Transaction Rejected!</MudAlert>
+                    }
+
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudForm Model="Transaction">
+                    <MudTabs Outlined="true" Position="Position.Left" Rounded="true" Border="true"
+                             ApplyEffectsToContainer="true" Class="mt-8" PanelClass="pa-6">
+                        <MudTabPanel Text="Payment Information">
+                            <MudGrid>
+                                <MudItem xs="12" sm="6">
+                                    <MudSelect T="PaymentType" @bind-Value="Transaction.PaymentType" ToStringFunc="PaymentTypeconverter" Label="Select Payment Type" Variant="Variant.Outlined" Margin="Margin.Dense" AnchorOrigin="Origin.BottomCenter" ReadOnly="true">
+                                        @foreach (var item in _paymentTypes)
+                                        {
+                                            <MudSelectItem T="PaymentType" Value="item">@item.PaymentType1</MudSelectItem>
+                                        }
+                                    </MudSelect>
+                                </MudItem>
+                                <MudItem xs="12" sm="6">
+                                    <MudSelect T="PaymentMethodTable" @bind-Value="Transaction.PaymentMethod" ToStringFunc="PaymentMethodconverter" Label="Select Payment Method" Variant="Variant.Outlined" Margin="Margin.Dense" AnchorOrigin="Origin.BottomCenter" ReadOnly="true">
+                                        @foreach (var item in _paymentMethods)
+                                        {
+                                            <MudSelectItem T="PaymentMethodTable" Value="item">@item.PaymentMethod</MudSelectItem>
+                                        }
+                                    </MudSelect>
+                                </MudItem>
+                                <MudItem xs="12" sm="6">
+                                    <MudSelect T="ReviewersTable" @bind-Value="Transaction.Reviewer" Label="Reviewer" ToStringFunc="Reviewerconverter" Variant="Variant.Outlined" Margin="Margin.Dense" AnchorOrigin="Origin.BottomCenter" ReadOnly="true">
+                                        @foreach (var item in _reviewersTables)
+                                        {
+                                            <MudSelectItem T="ReviewersTable" Value="item">@item.Employee.EmployeeName</MudSelectItem>
+                                        }
+                                    </MudSelect>
+                                </MudItem>
+                                @if (Transaction.Employee == null)
+                                {
+                                    <MudItem xs="12" sm="6">
+                                        <MudSelect T="Departments_Table" @bind-Value="Transaction.Department" ToStringFunc="Departmentconverter" Label="Select Department" Variant="Variant.Outlined" Margin="Margin.Dense" AnchorOrigin="Origin.BottomCenter" ReadOnly="true">
+                                            @foreach (var item in _departments_Tables)
+                                            {
+                                                <MudSelectItem T="Departments_Table" Value="item">@item.DepartmentName</MudSelectItem>
+                                            }
+                                        </MudSelect>
+                                    </MudItem>
+                                }
+                                @if (Transaction.Employee != null)
+                                {
+                                    <MudItem xs="12" sm="6">
+                                        <MudSelect T="EmployeeTable" @bind-Value="Transaction.Employee" ToStringFunc="Employeeconverter" Label="Select Employee" Variant="Variant.Outlined" Margin="Margin.Dense" AnchorOrigin="Origin.BottomCenter" ReadOnly="true">
+                                            @foreach (var item in _employees)
+                                            {
+                                                <MudSelectItem T="EmployeeTable" Value="item">@item.EmployeeName</MudSelectItem>
+                                            }
+                                        </MudSelect>
+                                    </MudItem>
+                                }
+
+                            </MudGrid>
+                        </MudTabPanel>
+                        <MudTabPanel Text="Payment Details">
+                            <MudGrid>
+                                <MudItem xs="12" sm="6">
+                                    <MudNumericField HideSpinButtons="true" T="int?" @bind-Value="Transaction.Amount" Label="Amount" ReadOnly="true" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                                </MudItem>
+                                <MudItem xs="12" sm="6">
+                                    <MudSelect T="TransactionStatus" @bind-Value="Transaction.StatusNavigation" Label="Select Current Transaction Status" Required="true" RequiredError="SELECT TRANSACTION STATUS" Variant="Variant.Outlined" Margin="Margin.Dense" AnchorOrigin="Origin.BottomCenter">
+                                        @foreach (var item in _transactionStatuses)
+                                        {
+                                            <MudSelectItem T="TransactionStatus" Value="item">@item.StatusType</MudSelectItem>
+                                        }
+                                    </MudSelect>
+                                </MudItem>
+                                <MudItem xs="12">
+                                    <MudTextField T="string" Label="Reviewer Comment" ReadOnly="true" Variant="Variant.Outlined" @bind-Text="Transaction.Reason" Lines="3" />
+                                </MudItem>
+                            </MudGrid>
+                        </MudTabPanel>
+                    </MudTabs>
+
+                </MudForm>
+            </MudCardContent>
+        </MudCard>
+    </DialogContent>
+    <DialogActions>
+
+        @if (Transaction.Authorized == null || Transaction.Authorized != "Authorized")
+        {
+            <MudButton ButtonType="ButtonType.Reset" Color="Color.Error" Variant="Variant.Filled" EndIcon="@Icons.Filled.Cancel" OnClick="CancelClose">Cancel</MudButton>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Dark" Disabled="true" Variant="Variant.Filled" EndIcon="@Icons.Filled.AddTask">Granted/Close</MudButton>
+        }
+        else
+        {
+            <MudDatePicker Label="Select Date Issued" @bind-Date="date" DisableToolbar="true" Variant="Variant.Outlined" Margin="Margin.Dense" />
+            <MudButton ButtonType="ButtonType.Reset" Color="Color.Error" Variant="Variant.Filled" EndIcon="@Icons.Filled.Cancel" OnClick="CancelClose">Cancel</MudButton>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Success" Variant="Variant.Filled" EndIcon="@Icons.Filled.AddTask" OnClick="GrantClose">Granted/Close</MudButton>
+        }
+    </DialogActions>
+</MudDialog>
+
+@code {
+    DateTime? date = DateTime.Today;
+    [Parameter] public ReviewTransactionTable Transaction { get; set; } = new();
+    [Inject] IGenericRepositoryService _genericRepositoryService { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetStatuses();
+    }
+
+    private void GrantClose()
+    {
+        Transaction.DateIssued = date;
+
+        ReviewTransactionTable = Transaction;
+        Submit();
+    }
+    private void CancelClose()
+    {
+        ReviewTransactionTable = Transaction;
+        Canceled();
+    }
+
+    protected async Task GetStatuses()
+    {
+        var result = await _genericRepositoryService.GetAllAsync<TransactionStatus>("api/NZUCManagement/GetStatuses");
+        _transactionStatuses = result.ToList();
+    }
+}

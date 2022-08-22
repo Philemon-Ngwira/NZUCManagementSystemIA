@@ -13,14 +13,28 @@ namespace NZUCManagementSystemIA.Shared.Models
     {
         [Key]
         public int Id { get; set; }
-        public int? Department { get; set; }
+        public int? DepartmentID { get; set; }
         public int? Amount { get; set; }
         public int? ReviewerId { get; set; }
-        public int? AuthorizationTableId { get; set; }
-        public int? AuthorizerId { get; set; }
+        public int? EmployeeId { get; set; }
+        [Column(TypeName = "text")]
+        public string Reason { get; set; }
+        public int? PaymentMethodId { get; set; }
+        [Column(TypeName = "date")]
+        public DateTime? DateIssued { get; set; }
+        [StringLength(50)]
+        [Unicode(false)]
+        public string AuthorizationState { get; set; }
+        public int? Status { get; set; }
 
-        [ForeignKey("AuthorizerId")]
+        [ForeignKey("DepartmentID")]
         [InverseProperty("TransactionTables")]
-        public virtual AuthorizerTable Authorizer { get; set; }
+        public virtual Departments_Table Department { get; set; }
+        [ForeignKey("PaymentMethodId")]
+        [InverseProperty("TransactionTables")]
+        public virtual PaymentMethodTable PaymentMethod { get; set; }
+        [ForeignKey("ReviewerId")]
+        [InverseProperty("TransactionTables")]
+        public virtual ReviewersTable Reviewer { get; set; }
     }
 }

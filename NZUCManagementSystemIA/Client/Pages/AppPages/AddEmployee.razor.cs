@@ -13,7 +13,7 @@ namespace NZUCManagementSystemIA.Client.Pages.AppPages
         protected IList<GenderTable> _genderlist = new List<GenderTable>();
         protected IList<Departments_Table> _departmentslist = new List<Departments_Table>();
         protected IList<SalaryTable> _salaryScalelist = new List<SalaryTable>();
-        [Inject] IGenericRepositoryService? _genericRepository { get; set; }
+        [Inject] IGenericRepositoryService _genericRepository { get; set; }
         [Inject] ISnackbar? Snackbar { get; set; }
         protected bool Success = false;
         #endregion

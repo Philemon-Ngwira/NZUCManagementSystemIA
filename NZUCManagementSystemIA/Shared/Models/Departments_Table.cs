@@ -16,6 +16,7 @@ namespace NZUCManagementSystemIA.Shared.Models
             EmployeeTables = new HashSet<EmployeeTable>();
             OperatingIncomeExpenses = new HashSet<OperatingIncomeExpense>();
             ReviewTransactionTables = new HashSet<ReviewTransactionTable>();
+            TransactionTables = new HashSet<TransactionTable>();
         }
 
         [Key]
@@ -33,5 +34,7 @@ namespace NZUCManagementSystemIA.Shared.Models
         public virtual ICollection<OperatingIncomeExpense> OperatingIncomeExpenses { get; set; }
         [InverseProperty("Department")]
         public virtual ICollection<ReviewTransactionTable> ReviewTransactionTables { get; set; }
+        [InverseProperty("Department")]
+        public virtual ICollection<TransactionTable> TransactionTables { get; set; }
     }
 }

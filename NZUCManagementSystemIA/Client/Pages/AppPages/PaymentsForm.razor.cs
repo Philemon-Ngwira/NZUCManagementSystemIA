@@ -5,7 +5,7 @@ using NZUCManagementSystemIA.Client.Interfaces;
 
 namespace NZUCManagementSystemIA.Client.Pages.AppPages
 {
-    public partial class PaymentsFormBase : ComponentBase 
+    public partial class PaymentsFormBase : ComponentBase
     {
         #region Variables
         #region ModelInstances
@@ -27,6 +27,7 @@ namespace NZUCManagementSystemIA.Client.Pages.AppPages
         [Inject] IGenericRepositoryService _genericRepositoryService { get; set; }
         [Inject] ISnackbar Snackbar { get; set; }
         [Inject] NavigationManager NavigationManager { get; set; }
+        
         #endregion
         protected bool IsSalary = false;
         #endregion
@@ -87,42 +88,37 @@ namespace NZUCManagementSystemIA.Client.Pages.AppPages
         #region Save
         protected async void Save()
         {
-            if (IsSalary)
+            if (ReviewTransactionTable.Employee != null)
             {
                 ReviewTransactionTable.EmployeeId = ReviewTransactionTable.Employee.Id;
-                ReviewTransactionTable.PaymentMethodId = ReviewTransactionTable.PaymentMethod.Id;
-                ReviewTransactionTable.PaymentTypeId = ReviewTransactionTable.PaymentType.Id;
-                ReviewTransactionTable.ReviewerId = ReviewTransactionTable.Reviewer.Id;
                 ReviewTransactionTable.DepartmentId = ReviewTransactionTable.Employee.DepartmentId;
-                ReviewTransactionTable.Employee = null;
-                ReviewTransactionTable.PaymentMethod = null;
-                ReviewTransactionTable.Reviewer = null;
-                ReviewTransactionTable.Department = null;
-                ReviewTransactionTable.PaymentType = null;
                 
-                await _genericRepositoryService.SaveAllAsync("api/NZUCManagement/SaveReviewerTransaction", ReviewTransactionTable);
-                Snackbar.Add("Successfully Submitted!",Severity.Success);
-                NavigationManager.NavigateTo("/Pages/Dashboards/Reviewer/ReviewerDashboard");
             }
-            else if (!IsSalary)
+            ReviewTransactionTable.PaymentMethodId = ReviewTransactionTable.PaymentMethod.Id;
+            ReviewTransactionTable.PaymentTypeId = ReviewTransactionTable.PaymentType.Id;
+            ReviewTransactionTable.ReviewerId = ReviewTransactionTable.Reviewer.Id;
+          
+            if (ReviewTransactionTable.Employee == null)
             {
                 ReviewTransactionTable.DepartmentId = ReviewTransactionTable.Department.Id;
-                ReviewTransactionTable.PaymentMethodId = ReviewTransactionTable.PaymentMethod.Id;
-                ReviewTransactionTable.PaymentTypeId = ReviewTransactionTable.PaymentType.Id;
-                ReviewTransactionTable.ReviewerId = ReviewTransactionTable.Reviewer.Id;
-                ReviewTransactionTable.Employee = null;
-                ReviewTransactionTable.PaymentMethod = null;
-                ReviewTransactionTable.Reviewer = null;
-                ReviewTransactionTable.Department = null;
-                ReviewTransactionTable.PaymentType = null;
-
-                
-                await _genericRepositoryService.SaveAllAsync("api/NZUCManagement/SaveReviewerTransaction", ReviewTransactionTable);
-                Snackbar.Add("Successfully Submitted!", Severity.Success);
-                NavigationManager.NavigateTo("/Pages/Dashboards/Reviewer/ReviewerDashboard");
-
             }
+            
+            //Nulling Virtual Objects
+            ReviewTransactionTable.Employee = null;
+            ReviewTransactionTable.PaymentMethod = null;
+            ReviewTransactionTable.Reviewer = null;
+            ReviewTransactionTable.Department = null;
+            ReviewTransactionTable.PaymentType = null;
+            ReviewTransactionTable.Status = 3;
+            Snackbar.Add("Successfully Submitted!", Severity.Success);
+            NavigationManager.NavigateTo("/Pages/Dashboards/Reviewer/ReviewerDashboard");
+            await _genericRepositoryService.SaveAllAsync("api/NZUCManagement/SaveReviewerTransaction", ReviewTransactionTable);
+            
+            
+
+
         }
+
         #endregion
 
     }

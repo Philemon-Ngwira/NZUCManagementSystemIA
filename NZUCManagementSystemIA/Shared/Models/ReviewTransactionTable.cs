@@ -24,6 +24,9 @@ namespace NZUCManagementSystemIA.Shared.Models
         [StringLength(50)]
         [Unicode(false)]
         public string Authorized { get; set; }
+        public int? Status { get; set; }
+        [Column(TypeName = "date")]
+        public DateTime? DateIssued { get; set; }
 
         [ForeignKey("DepartmentId")]
         [InverseProperty("ReviewTransactionTables")]
@@ -40,5 +43,8 @@ namespace NZUCManagementSystemIA.Shared.Models
         [ForeignKey("ReviewerId")]
         [InverseProperty("ReviewTransactionTables")]
         public virtual ReviewersTable Reviewer { get; set; }
+        [ForeignKey("Status")]
+        [InverseProperty("ReviewTransactionTables")]
+        public virtual TransactionStatus StatusNavigation { get; set; }
     }
 }

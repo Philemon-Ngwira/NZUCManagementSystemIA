@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Domain.Interfaces;
 using Domain.Data;
 using System.IdentityModel.Tokens.Jwt;
+using NZUCManagementSystemIA.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +35,8 @@ builder.Services.AddIdentityServer()
         opt.ApiResources.Single().UserClaims.Add("role");
     });
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Remove("role");
+builder.Services.AddScoped<IMailingService, MailingService>();
+
 
 builder.Services.AddAuthentication()
     .AddIdentityServerJwt();

@@ -11,11 +11,6 @@ namespace NZUCManagementSystemIA.Shared.Models
     [Table("AuthorizerTable")]
     public partial class AuthorizerTable
     {
-        public AuthorizerTable()
-        {
-            TransactionTables = new HashSet<TransactionTable>();
-        }
-
         [Key]
         public int Id { get; set; }
         public int? AuthorizerNameId { get; set; }
@@ -23,7 +18,5 @@ namespace NZUCManagementSystemIA.Shared.Models
         [ForeignKey("AuthorizerNameId")]
         [InverseProperty("AuthorizerTables")]
         public virtual EmployeeTable AuthorizerName { get; set; }
-        [InverseProperty("Authorizer")]
-        public virtual ICollection<TransactionTable> TransactionTables { get; set; }
     }
 }

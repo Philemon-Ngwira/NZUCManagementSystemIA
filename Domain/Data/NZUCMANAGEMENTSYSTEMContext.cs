@@ -34,6 +34,7 @@ namespace Domain.Data
         public virtual DbSet<ReviewTransactionTable> ReviewTransactionTables { get; set; }
         public virtual DbSet<ReviewersTable> ReviewersTables { get; set; }
         public virtual DbSet<SalaryTable> SalaryTables { get; set; }
+        public virtual DbSet<TransactionStatus> TransactionStatuses { get; set; }
         public virtual DbSet<TransactionTable> TransactionTables { get; set; }
         public virtual DbSet<YearlyBudgetTable> YearlyBudgetTables { get; set; }
 
@@ -130,6 +131,11 @@ namespace Domain.Data
                     .WithMany(p => p.ReviewTransactionTables)
                     .HasForeignKey(d => d.ReviewerId)
                     .HasConstraintName("FK_ReviewTransactionTable_ReviewersTable");
+
+                entity.HasOne(d => d.StatusNavigation)
+                    .WithMany(p => p.ReviewTransactionTables)
+                    .HasForeignKey(d => d.Status)
+                    .HasConstraintName("FK_ReviewTransactionTable_TransactionStatus");
             });
 
             modelBuilder.Entity<ReviewersTable>(entity =>
@@ -142,10 +148,20 @@ namespace Domain.Data
 
             modelBuilder.Entity<TransactionTable>(entity =>
             {
-                entity.HasOne(d => d.Authorizer)
+                entity.HasOne(d => d.Department)
                     .WithMany(p => p.TransactionTables)
-                    .HasForeignKey(d => d.AuthorizerId)
-                    .HasConstraintName("FK_TransactionTable_AuthorizerTable");
+                    .HasForeignKey(d => d.DepartmentID)
+                    .HasConstraintName("FK_TransactionTable_Departments Table");
+
+                entity.HasOne(d => d.PaymentMethod)
+                    .WithMany(p => p.TransactionTables)
+                    .HasForeignKey(d => d.PaymentMethodId)
+                    .HasConstraintName("FK_TransactionTable_PaymentMethodTable");
+
+                entity.HasOne(d => d.Reviewer)
+                    .WithMany(p => p.TransactionTables)
+                    .HasForeignKey(d => d.ReviewerId)
+                    .HasConstraintName("FK_TransactionTable_ReviewersTable");
             });
 
             modelBuilder.Entity<YearlyBudgetTable>(entity =>

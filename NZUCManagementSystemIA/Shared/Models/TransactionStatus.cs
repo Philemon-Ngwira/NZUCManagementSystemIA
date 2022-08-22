@@ -8,24 +8,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace NZUCManagementSystemIA.Shared.Models
 {
-    [Table("PaymentMethodTable")]
-    public partial class PaymentMethodTable
+    [Table("TransactionStatus")]
+    public partial class TransactionStatus
     {
-        public PaymentMethodTable()
+        public TransactionStatus()
         {
             ReviewTransactionTables = new HashSet<ReviewTransactionTable>();
-            TransactionTables = new HashSet<TransactionTable>();
         }
 
         [Key]
-        public int Id { get; set; }
+        public int ID { get; set; }
         [StringLength(50)]
         [Unicode(false)]
-        public string PaymentMethod { get; set; }
+        public string StatusType { get; set; }
 
-        [InverseProperty("PaymentMethod")]
+        [InverseProperty("StatusNavigation")]
         public virtual ICollection<ReviewTransactionTable> ReviewTransactionTables { get; set; }
-        [InverseProperty("PaymentMethod")]
-        public virtual ICollection<TransactionTable> TransactionTables { get; set; }
     }
 }

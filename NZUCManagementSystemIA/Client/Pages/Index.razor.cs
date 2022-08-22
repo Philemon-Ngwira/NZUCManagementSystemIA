@@ -8,43 +8,72 @@ namespace NZUCManagementSystemIA.Client.Pages
 {
     public class IndexBase : ComponentBase
     {
-        protected IList<EmployeeTable> _employeeslist = new List<EmployeeTable>();
-        protected IList<Departments_Table> _departments = new List<Departments_Table>();
+        #region Budget Variables
+        protected YearlyBudgetTable YearlyBudget = new YearlyBudgetTable();
         protected IList<YearlyBudgetTable> yearlyBudgets = new List<YearlyBudgetTable>();
         protected IList<OperatingIncomeExpense> operatingIncomeExpenses = new List<OperatingIncomeExpense>();
-        protected IList<ConferencesAndField> _conferences = new List<ConferencesAndField>();
-        protected IList<ReviewTransactionTable> _transactions = new List<ReviewTransactionTable>();
-        protected int? totalIncomeYearBudget;
-        protected int? totalmonthoperatingIncome;
-        string incomeBudgetName = "";
-        string operatingIncomeName = "";
-        protected string IncomeBudgetDisplay;
-        protected string operatingIncomeDisplay;
-        protected string[] XAxisLabels = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
-        [Inject] IGenericRepositoryService _genericRepository { get; set; }
-        [Inject] AuthenticationStateProvider AuthenticationState { get; set; }
+        protected string incomeBudgetName = string.Empty;
+        protected int? totalIncomeYearBudget = 0;
+        protected string IncomeBudgetDisplay = string.Empty;
+        protected string operatingIncomeName = string.Empty;
+        protected string operatingExpenseName = string.Empty;
+        protected string Info;
+        protected int? totalmonthoperatingIncome = 0;
+        protected int? totalmonthoperatingExpense = 0;
+        protected string operatingIncomeDisplay = string.Empty;
+        protected string operatingExpenseDisplay = string.Empty;
+        #endregion
 
-        protected int totalEmployees;
-        protected int Index = -1;
+        #region Employee Variables
+        protected IList<EmployeeTable> employees = new List<EmployeeTable>();
+        protected int totalEmployees = 0;
+        #endregion
+
+        #region Charts
+        #region LineChart
+        protected List<ChartSeries> Series = new List<ChartSeries>();
+        protected string[] XAxisLabels = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+        private double JanIncome, febIncome, MarIncome, AprIncome, MayIncome, JunIncome, JulIncome, AugIncome, sepIncome, OctIncome, NovIncome, DecIncome;
+        private double JanExp, febExp, MarExp, AprExp, MayExp, JunExp, JulExp, AugExp, sepExp, OctExp, NovExp, DecExp;
         protected double[] IncomePerMonth = new double[12];
+        protected double[] ExpensePerMonth = new double[12];
         protected ChartSeries ExpensePerMonthSeries = new ChartSeries();
         protected ChartSeries IncomePerMonthSeries = new ChartSeries();
-        private double JanIncome, febIncome, MarIncome, AprIncome, MayIncome, JunIncome, JulIncome, AugIncome, sepIncome, OctIncome, NovIncome, DecIncome;
-        protected List<ChartSeries> Series = new List<ChartSeries>();
-        protected ChartOptions ChartOptions { get; set; } = new ChartOptions();
-        protected string[] departments;
-        protected List<string> deptNames = new List<string>();
-        protected int? DepartmentIncome;
-        public string[] labels = { "Income", "Expense", };
-        protected string IncomeDisplay;
-        protected string ExpenseDisplay;
+        protected int Index = -1;
+        #endregion
+        #region Dognut Chart
         protected double[] incomeExpensedata = new double[2];
-        protected int chartindex = -1;
-        protected int datasize;
+        protected string IncomeDisplay = string.Empty;
+        protected string ExpenseDisplay = string.Empty;
+        public string[] labels = { "Income", "Expense", };
+        #endregion
+        #region PieChart
+        protected IList<Departments_Table> _departments = new List<Departments_Table>();
+        protected IList<ConferencesAndField> _conferences = new List<ConferencesAndField>();
         protected string[] ConferenceNames;
+        protected int datasize = 0;
         protected double[] conferenceIncomeData;
-        protected double incomeConfData1, incomeConfData2, incomeConfData3, incomeConfData4, incomeConfData5, incomeConfData6;
+        #endregion
+        #region BarChart
+        protected string[] DepartmentNames;
+        protected int BarChartIndex = -1;
+        protected List<ChartSeries> DepartmentSpendSeries = new List<ChartSeries>();
+        protected ChartSeries DepartmentSalarySpendSeries = new ChartSeries();
+        protected ChartSeries DepartmentTravelExpenseSeries = new ChartSeries();
+        protected bool notEnoughData;
+        //{
+        //    new ChartSeries() { Name = "United States", Data = new double[] { 40, 20, 25, 27, 46, 60, 48, 80, 15 } },
+        //    new ChartSeries() { Name = "Germany", Data = new double[] { 19, 24, 35, 13, 28, 15, 13, 16, 31 } },
+        //    new ChartSeries() { Name = "Sweden", Data = new double[] { 8, 6, 11, 13, 4, 16, 10, 16, 18 } },
+        //};
 
+        #endregion
+        #endregion
+
+        #region Injections
+        [Inject] IGenericRepositoryService _genericRepository { get; set; }
+        [Inject] AuthenticationStateProvider AuthenticationState { get; set; }
+        #endregion
 
 
 
@@ -53,29 +82,17 @@ namespace NZUCManagementSystemIA.Client.Pages
             var user = (await AuthenticationState.GetAuthenticationStateAsync()).User.Identity;
             if (user != null && user.IsAuthenticated)
             {
-                await GetTransactions();
                 await GetBudgets();
-                PieChart();
-                await GetEmployees();
-                totalEmployees = _employeeslist.Count();
-                getMonthlyIncomeData();
-                getPieChartData();
+                await GetEmployeeCount();
+                await GetMonthByMonthIncomeAndExpense();
                 DonughtChart();
-                Series.Add(IncomePerMonthSeries);
-                Series.Add(ExpensePerMonthSeries);
+                await PieChart();
+                await GetBarChartData();
+                Delays();
             }
+        }
 
-        }
-        protected async Task GetTransactions()
-        {
-            var result = await _genericRepository.GetAllAsync<ReviewTransactionTable>("api/NZUCManagement/GetReviewerTransactions");
-            _transactions = result.ToList();
-        }
-        private async Task GetEmployees()
-        {
-            var result = await _genericRepository.GetAllAsync<EmployeeTable>("api/NZUCManagement/GetEmployees");
-            _employeeslist = result.ToList();
-        }
+        #region Functions
         protected async Task GetBudgets()
         {
             var result = await _genericRepository.GetAllAsync<YearlyBudgetTable>("api/NZUCManagement/GetBudgets");
@@ -86,16 +103,128 @@ namespace NZUCManagementSystemIA.Client.Pages
             var operatings = await _genericRepository.GetAllAsync<OperatingIncomeExpense>("api/NZUCManagement/GetOperatingIncomeExpense");
             operatingIncomeExpenses = operatings.ToList();
             operatingIncomeName = "Income";
+            operatingExpenseName = "Expenses";
             totalmonthoperatingIncome = operatingIncomeExpenses.Where(x => x.IncomeExpenseOperatingTypeNavigation.OperatingType1 == operatingIncomeName).Sum(x => x.Amount);
-            DepartmentIncome = totalmonthoperatingIncome;
             operatingIncomeDisplay = $"{totalmonthoperatingIncome:n0}";
+            totalmonthoperatingExpense = operatingIncomeExpenses.Where(x => x.IncomeExpenseOperatingTypeNavigation.OperatingType1 == operatingExpenseName).Sum(x => x.Amount);
+            operatingExpenseDisplay = $"{totalmonthoperatingExpense:n0}";
+        }
+        private async Task GetEmployeeCount()
+        {
+            var result = await _genericRepository.GetAllAsync<EmployeeTable>("api/NZUCManagement/GetEmployees");
+            employees = result.ToList();
+            totalEmployees = employees.Count();
         }
 
-        protected void fillghraph()
+        #region LineChart
+        protected async Task GetMonthByMonthIncomeAndExpense()
+        {
+            var result = await _genericRepository.GetAllAsync<OperatingIncomeExpense>("api/NZUCManagement/GetOperatingIncomeExpense");
+            operatingIncomeExpenses = result.ToList();
+
+            //Get Monthly Income
+            int? JanIn = operatingIncomeExpenses.Where(x => x.DateMonth.Value.Month == 1 && x.IncomeExpenseOperatingType == 1).Sum(x => x.Amount);
+            int? FebIn = operatingIncomeExpenses.Where(x => x.DateMonth.Value.Month == 2 && x.IncomeExpenseOperatingType == 1).Sum(x => x.Amount);
+            int? MarIn = operatingIncomeExpenses.Where(x => x.DateMonth.Value.Month == 3 && x.IncomeExpenseOperatingType == 1).Sum(x => x.Amount);
+            int? AprIn = operatingIncomeExpenses.Where(x => x.DateMonth.Value.Month == 4 && x.IncomeExpenseOperatingType == 1).Sum(x => x.Amount);
+            int? MayIn = operatingIncomeExpenses.Where(x => x.DateMonth.Value.Month == 5 && x.IncomeExpenseOperatingType == 1).Sum(x => x.Amount);
+            int? JunIn = operatingIncomeExpenses.Where(x => x.DateMonth.Value.Month == 6 && x.IncomeExpenseOperatingType == 1).Sum(x => x.Amount);
+            int? JulIn = operatingIncomeExpenses.Where(x => x.DateMonth.Value.Month == 7 && x.IncomeExpenseOperatingType == 1).Sum(x => x.Amount);
+            int? AugIn = operatingIncomeExpenses.Where(x => x.DateMonth.Value.Month == 8 && x.IncomeExpenseOperatingType == 1).Sum(x => x.Amount);
+            int? SepIn = operatingIncomeExpenses.Where(x => x.DateMonth.Value.Month == 9 && x.IncomeExpenseOperatingType == 1).Sum(x => x.Amount);
+            int? OctIn = operatingIncomeExpenses.Where(x => x.DateMonth.Value.Month == 10 && x.IncomeExpenseOperatingType == 1).Sum(x => x.Amount);
+            int? NovIn = operatingIncomeExpenses.Where(x => x.DateMonth.Value.Month == 11 && x.IncomeExpenseOperatingType == 1).Sum(x => x.Amount);
+            int? DecIn = operatingIncomeExpenses.Where(x => x.DateMonth.Value.Month == 12 && x.IncomeExpenseOperatingType == 1).Sum(x => x.Amount);
+
+            #region Convert All Income Amounts to Doubles
+            JanIncome = Convert.ToDouble(JanIn);
+            febIncome = Convert.ToDouble(FebIn);
+            MarIncome = Convert.ToDouble(MarIn);
+            AprIncome = Convert.ToDouble(AprIn);
+            MayIncome = Convert.ToDouble(MayIn);
+            JunIncome = Convert.ToDouble(JunIn);
+            JulIncome = Convert.ToDouble(JulIn);
+            AugIncome = Convert.ToDouble(AugIn);
+            sepIncome = Convert.ToDouble(SepIn);
+            OctIncome = Convert.ToDouble(OctIn);
+            NovIncome = Convert.ToDouble(NovIn);
+            DecIncome = Convert.ToDouble(DecIn);
+            #endregion
+            #region Assign Amounts to Array Indecies
+            IncomePerMonth[0] = JanIncome;
+            IncomePerMonth[1] = febIncome;
+            IncomePerMonth[2] = MarIncome;
+            IncomePerMonth[3] = AprIncome;
+            IncomePerMonth[4] = MayIncome;
+            IncomePerMonth[5] = JunIncome;
+            IncomePerMonth[6] = JulIncome;
+            IncomePerMonth[7] = AugIncome;
+            IncomePerMonth[8] = sepIncome;
+            IncomePerMonth[9] = OctIncome;
+            IncomePerMonth[10] = NovIncome;
+            IncomePerMonth[11] = DecIncome;
+            #endregion
+
+            //Get Monthly Expense
+            int? JanEx = operatingIncomeExpenses.Where(x => x.DateMonth.Value.Month == 1 && x.IncomeExpenseOperatingType == 2).Sum(x => x.Amount);
+            int? FebEx = operatingIncomeExpenses.Where(x => x.DateMonth.Value.Month == 2 && x.IncomeExpenseOperatingType == 2).Sum(x => x.Amount);
+            int? MarEx = operatingIncomeExpenses.Where(x => x.DateMonth.Value.Month == 3 && x.IncomeExpenseOperatingType == 2).Sum(x => x.Amount);
+            int? AprEx = operatingIncomeExpenses.Where(x => x.DateMonth.Value.Month == 4 && x.IncomeExpenseOperatingType == 2).Sum(x => x.Amount);
+            int? MayEx = operatingIncomeExpenses.Where(x => x.DateMonth.Value.Month == 5 && x.IncomeExpenseOperatingType == 2).Sum(x => x.Amount);
+            int? JunEx = operatingIncomeExpenses.Where(x => x.DateMonth.Value.Month == 6 && x.IncomeExpenseOperatingType == 2).Sum(x => x.Amount);
+            int? JulEx = operatingIncomeExpenses.Where(x => x.DateMonth.Value.Month == 7 && x.IncomeExpenseOperatingType == 2).Sum(x => x.Amount);
+            int? AugEx = operatingIncomeExpenses.Where(x => x.DateMonth.Value.Month == 8 && x.IncomeExpenseOperatingType == 2).Sum(x => x.Amount);
+            int? SepEx = operatingIncomeExpenses.Where(x => x.DateMonth.Value.Month == 9 && x.IncomeExpenseOperatingType == 2).Sum(x => x.Amount);
+            int? OctEx = operatingIncomeExpenses.Where(x => x.DateMonth.Value.Month == 10 && x.IncomeExpenseOperatingType == 2).Sum(x => x.Amount);
+            int? NovEx = operatingIncomeExpenses.Where(x => x.DateMonth.Value.Month == 11 && x.IncomeExpenseOperatingType == 2).Sum(x => x.Amount);
+            int? DecEx = operatingIncomeExpenses.Where(x => x.DateMonth.Value.Month == 12 && x.IncomeExpenseOperatingType == 2).Sum(x => x.Amount);
+
+            #region Convert All Expense Amounts to Doubles
+            JanExp = Convert.ToDouble(JanEx);
+            febExp = Convert.ToDouble(FebEx);
+            MarExp = Convert.ToDouble(MarEx);
+            AprExp = Convert.ToDouble(AprEx);
+            MayExp = Convert.ToDouble(MayEx);
+            JunExp = Convert.ToDouble(JunEx);
+            JulExp = Convert.ToDouble(JulEx);
+            AugExp = Convert.ToDouble(AugEx);
+            sepExp = Convert.ToDouble(SepEx);
+            OctExp = Convert.ToDouble(OctEx);
+            NovExp = Convert.ToDouble(NovEx);
+            DecExp = Convert.ToDouble(DecEx);
+            #endregion
+            ExpensePerMonth[0] = JanExp;
+            ExpensePerMonth[1] = febExp;
+            ExpensePerMonth[2] = MarExp;
+            ExpensePerMonth[3] = AprExp;
+            ExpensePerMonth[4] = MayExp;
+            ExpensePerMonth[5] = JunExp;
+            ExpensePerMonth[6] = JulExp;
+            ExpensePerMonth[7] = AugExp;
+            ExpensePerMonth[8] = sepExp;
+            ExpensePerMonth[9] = OctExp;
+            ExpensePerMonth[10] = NovExp;
+            ExpensePerMonth[11] = DecExp;
+
+            FillLineChart();
+        }
+        protected void FillLineChart()
         {
             ExpensePerMonthSeries.Name = "Expense";
-            ExpensePerMonthSeries.Data = new double[] { 1000, 402000, 200000, 4000, 5000, 6000, 7000, 5000, 3000, 25000, 4500, 9000 };
-            //Index Zero Is January and so on!
+            ExpensePerMonthSeries.Data = new double[12];
+            ExpensePerMonthSeries.Data[0] = ExpensePerMonth[0];
+            ExpensePerMonthSeries.Data[1] = ExpensePerMonth[1];
+            ExpensePerMonthSeries.Data[2] = ExpensePerMonth[2];
+            ExpensePerMonthSeries.Data[3] = ExpensePerMonth[3];
+            ExpensePerMonthSeries.Data[4] = ExpensePerMonth[4];
+            ExpensePerMonthSeries.Data[5] = ExpensePerMonth[5];
+            ExpensePerMonthSeries.Data[6] = ExpensePerMonth[6];
+            ExpensePerMonthSeries.Data[7] = ExpensePerMonth[7];
+            ExpensePerMonthSeries.Data[8] = ExpensePerMonth[8];
+            ExpensePerMonthSeries.Data[9] = ExpensePerMonth[9];
+            ExpensePerMonthSeries.Data[10] = ExpensePerMonth[10];
+            ExpensePerMonthSeries.Data[11] = ExpensePerMonth[11];
+
             #region IncomeChartSeries
             IncomePerMonthSeries.Name = "Income";
             IncomePerMonthSeries.Data = new double[12];
@@ -113,84 +242,24 @@ namespace NZUCManagementSystemIA.Client.Pages
             IncomePerMonthSeries.Data[11] = IncomePerMonth[11];
             #endregion 
 
-
-
+            Series.Add(IncomePerMonthSeries);
+            Series.Add(ExpensePerMonthSeries);
         }
+        #endregion
 
-        private void getMonthlyIncomeData()
-        {
-            #region Getting Int Income Amounts
-            int? JanIn = operatingIncomeExpenses.Where(x => x.DateMonth.Value.Month == 1 && x.IncomeExpenseOperatingType == 1).Sum(x => x.Amount);
-            int? FebIn = operatingIncomeExpenses.Where(x => x.DateMonth.Value.Month == 2 && x.IncomeExpenseOperatingType == 1).Sum(x => x.Amount);
-            int? MarIn = operatingIncomeExpenses.Where(x => x.DateMonth.Value.Month == 3 && x.IncomeExpenseOperatingType == 1).Sum(x => x.Amount);
-            int? AprIn = operatingIncomeExpenses.Where(x => x.DateMonth.Value.Month == 4 && x.IncomeExpenseOperatingType == 1).Sum(x => x.Amount);
-            int? MayIn = operatingIncomeExpenses.Where(x => x.DateMonth.Value.Month == 5 && x.IncomeExpenseOperatingType == 1).Sum(x => x.Amount);
-            int? JunIn = operatingIncomeExpenses.Where(x => x.DateMonth.Value.Month == 6 && x.IncomeExpenseOperatingType == 1).Sum(x => x.Amount);
-            int? JulIn = operatingIncomeExpenses.Where(x => x.DateMonth.Value.Month == 7 && x.IncomeExpenseOperatingType == 1).Sum(x => x.Amount);
-            int? AugIn = operatingIncomeExpenses.Where(x => x.DateMonth.Value.Month == 8 && x.IncomeExpenseOperatingType == 1).Sum(x => x.Amount);
-            int? SepIn = operatingIncomeExpenses.Where(x => x.DateMonth.Value.Month == 9 && x.IncomeExpenseOperatingType == 1).Sum(x => x.Amount);
-            int? OctIn = operatingIncomeExpenses.Where(x => x.DateMonth.Value.Month == 10 && x.IncomeExpenseOperatingType == 1).Sum(x => x.Amount);
-            int? NovIn = operatingIncomeExpenses.Where(x => x.DateMonth.Value.Month == 11 && x.IncomeExpenseOperatingType == 1).Sum(x => x.Amount);
-            int? DecIn = operatingIncomeExpenses.Where(x => x.DateMonth.Value.Month == 12 && x.IncomeExpenseOperatingType == 1).Sum(x => x.Amount);
-            #endregion
-
-            #region Convert All Amounts to Doubles
-            JanIncome = Convert.ToDouble(JanIn);
-            febIncome = Convert.ToDouble(FebIn);
-            MarIncome = Convert.ToDouble(MarIn);
-            AprIncome = Convert.ToDouble(AprIn);
-            MayIncome = Convert.ToDouble(MayIn);
-            JunIncome = Convert.ToDouble(JunIn);
-            JulIncome = Convert.ToDouble(JulIn);
-            AugIncome = Convert.ToDouble(AugIn);
-            sepIncome = Convert.ToDouble(SepIn);
-            OctIncome = Convert.ToDouble(OctIn);
-            NovIncome = Convert.ToDouble(NovIn);
-            DecIncome = Convert.ToDouble(DecIn);
-            #endregion
-
-            #region Assign Amounts to Array Indecies
-            IncomePerMonth[0] = JanIncome;
-            IncomePerMonth[1] = febIncome;
-            IncomePerMonth[2] = MarIncome;
-            IncomePerMonth[3] = AprIncome;
-            IncomePerMonth[4] = MayIncome;
-            IncomePerMonth[5] = JunIncome;
-            IncomePerMonth[6] = JulIncome;
-            IncomePerMonth[7] = AugIncome;
-            IncomePerMonth[8] = sepIncome;
-            IncomePerMonth[9] = OctIncome;
-            IncomePerMonth[10] = NovIncome;
-            IncomePerMonth[11] = DecIncome;
-            #endregion
-
-            fillghraph();
-
-        }
-        private async void getPieChartData()
-        {
-            var data = await _genericRepository.GetAllAsync<Departments_Table>("api/NZUCManagement/GetDepartments");
-            _departments = data.ToList();
-            foreach (var item in _departments)
-            {
-
-
-                deptNames.Add(item.DepartmentName);
-
-            }
-            deptNames.ToArray();
-            departments = deptNames.ToArray();
-        }
+        #region Dognut Chart
         private void DonughtChart()
         {
-            //everywhere with 400000 goes expense
-            var doubleinc = Convert.ToDouble(DepartmentIncome);
+
+            var doubleinc = Convert.ToDouble(totalmonthoperatingIncome);
+            var doubleExp = Convert.ToDouble(totalmonthoperatingExpense);
             incomeExpensedata[0] = doubleinc;
-            incomeExpensedata[1] = 400000;
+            incomeExpensedata[1] = doubleExp;
             IncomeDisplay = $"{doubleinc:n0}";
-            ExpenseDisplay = $"{400000:n0}";
+            ExpenseDisplay = $"{doubleExp:n0}";
         }
-        private async void PieChart()
+
+        private async Task PieChart()
         {
             List<double> Amounts = new List<double>();
             List<string> Names = new List<string>();
@@ -201,23 +270,64 @@ namespace NZUCManagementSystemIA.Client.Pages
                 Names.Add(item.ConferenceName);
             }
             ConferenceNames = Names.ToArray();
-            var one = operatingIncomeExpenses.Where(x => x.Conference.ConferenceName == ConferenceNames[0]).Sum(x => x.Amount);
-            var two = operatingIncomeExpenses.Where(x => x.Conference.ConferenceName == ConferenceNames[1]).Sum(x => x.Amount);
-            var three = operatingIncomeExpenses.Where(x => x.Conference.ConferenceName == ConferenceNames[2]).Sum(x => x.Amount);
-            var four = operatingIncomeExpenses.Where(x => x.Conference.ConferenceName == ConferenceNames[3]).Sum(x => x.Amount);
-            var five = operatingIncomeExpenses.Where(x => x.Conference.ConferenceName == ConferenceNames[4]).Sum(x => x.Amount);
-            var six = operatingIncomeExpenses.Where(x => x.Conference.ConferenceName == ConferenceNames[5]).Sum(x => x.Amount);
-
             datasize = 6;
             conferenceIncomeData = new double[_conferences.Count()];
-            conferenceIncomeData[0] = Convert.ToDouble(one);
-            conferenceIncomeData[1] = Convert.ToDouble(two);
-            conferenceIncomeData[2] = Convert.ToDouble(three);
-            conferenceIncomeData[3] = Convert.ToDouble(four);
-            conferenceIncomeData[4] = Convert.ToDouble(five);
-            conferenceIncomeData[5] = Convert.ToDouble(six);
+            conferenceIncomeData[0] = Convert.ToDouble(operatingIncomeExpenses.Where(x => x.Conference.ConferenceName == ConferenceNames[0]).Sum(x => x.Amount));
+            conferenceIncomeData[1] = Convert.ToDouble(operatingIncomeExpenses.Where(x => x.Conference.ConferenceName == ConferenceNames[1]).Sum(x => x.Amount));
+            conferenceIncomeData[2] = Convert.ToDouble(operatingIncomeExpenses.Where(x => x.Conference.ConferenceName == ConferenceNames[2]).Sum(x => x.Amount));
+            conferenceIncomeData[3] = Convert.ToDouble(operatingIncomeExpenses.Where(x => x.Conference.ConferenceName == ConferenceNames[3]).Sum(x => x.Amount));
+            conferenceIncomeData[4] = Convert.ToDouble(operatingIncomeExpenses.Where(x => x.Conference.ConferenceName == ConferenceNames[4]).Sum(x => x.Amount));
+            conferenceIncomeData[5] = Convert.ToDouble(operatingIncomeExpenses.Where(x => x.Conference.ConferenceName == ConferenceNames[5]).Sum(x => x.Amount));
+        }
+        #endregion
+        #region BarChart
+
+        protected async Task GetBarChartData()
+        {
+            var result = await _genericRepository.GetAllAsync<Departments_Table>("api/NZUCManagement/GetDepartments");
+            _departments = result.ToList();
+            List<string> Names = new List<string>();
+            foreach (var item in _departments)
+            {
+                Names.Add(item.DepartmentName);
+            }
+            DepartmentNames = Names.ToArray();
+            DepartmentSalarySpendSeries.Name = "Department Costs";
+            DepartmentSalarySpendSeries.Data = new double[_departments.Count()];
+            if (operatingIncomeExpenses.Any(x => x.Department == null))
+            {
+                DepartmentSalarySpendSeries.Data[0] = 0;
+                DepartmentSalarySpendSeries.Data[1] = 0;
+                DepartmentSalarySpendSeries.Data[2] = 0;
+                DepartmentSalarySpendSeries.Data[3] = 0;
+                DepartmentSalarySpendSeries.Data[4] = 0;
+                DepartmentSalarySpendSeries.Data[5] = 0;
+                DepartmentSalarySpendSeries.Data[6] = 0;
+                DepartmentSalarySpendSeries.Data[7] = 0;
+                
+
+            }
+            else
+            {
+                DepartmentSalarySpendSeries.Data[0] = operatingIncomeExpenses.Where(x => x.Department.DepartmentName == DepartmentNames[0] && x.IncomeExpenseOperatingType == 2).Sum(x => Convert.ToDouble(x.Amount));
+                DepartmentSalarySpendSeries.Data[1] = operatingIncomeExpenses.Where(x => x.Department.DepartmentName == DepartmentNames[1] && x.IncomeExpenseOperatingType == 2).Sum(x => Convert.ToDouble(x.Amount));
+                DepartmentSalarySpendSeries.Data[2] = operatingIncomeExpenses.Where(x => x.Department.DepartmentName == DepartmentNames[2] && x.IncomeExpenseOperatingType == 2).Sum(x => Convert.ToDouble(x.Amount));
+                DepartmentSalarySpendSeries.Data[3] = operatingIncomeExpenses.Where(x => x.Department.DepartmentName == DepartmentNames[3] && x.IncomeExpenseOperatingType == 2).Sum(x => Convert.ToDouble(x.Amount));
+                DepartmentSalarySpendSeries.Data[4] = operatingIncomeExpenses.Where(x => x.Department.DepartmentName == DepartmentNames[4] && x.IncomeExpenseOperatingType == 2).Sum(x => Convert.ToDouble(x.Amount));
+                DepartmentSalarySpendSeries.Data[5] = operatingIncomeExpenses.Where(x => x.Department.DepartmentName == DepartmentNames[5] && x.IncomeExpenseOperatingType == 2).Sum(x => Convert.ToDouble(x.Amount));
+                DepartmentSalarySpendSeries.Data[6] = operatingIncomeExpenses.Where(x => x.Department.DepartmentName == DepartmentNames[6] && x.IncomeExpenseOperatingType == 2).Sum(x => Convert.ToDouble(x.Amount));
+                DepartmentSalarySpendSeries.Data[7] = operatingIncomeExpenses.Where(x => x.Department.DepartmentName == DepartmentNames[7] && x.IncomeExpenseOperatingType == 2).Sum(x => Convert.ToDouble(x.Amount));
+            }
+            DepartmentSpendSeries.Add(DepartmentSalarySpendSeries);
         }
 
-    }
+        #endregion
+        protected void Delays()
+        {
+            Thread.Sleep(10000);
+            Info = "No DataFound!!";
 
+        }
+        #endregion
+    }
 }

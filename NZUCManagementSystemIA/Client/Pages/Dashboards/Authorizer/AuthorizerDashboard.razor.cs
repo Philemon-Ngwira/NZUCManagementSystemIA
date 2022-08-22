@@ -17,6 +17,7 @@ namespace NZUCManagementSystemIA.Client.Pages.Dashboards.Authorizer
 
         protected ReviewTransactionTable ReviewTransactionTable = new();
         protected IList<ReviewTransactionTable> _transactions = new List<ReviewTransactionTable>();
+        protected IList<ReviewTransactionTable> _transactionsDisplay = new List<ReviewTransactionTable>();
         protected IEnumerable<ReviewTransactionTable> PagedData;
         [Inject] IGenericRepositoryService _genericRepositoryService { get; set; }
         [Inject] ISnackbar Snackbar { get; set; }
@@ -68,6 +69,7 @@ namespace NZUCManagementSystemIA.Client.Pages.Dashboards.Authorizer
         {
             var result = await _genericRepositoryService.GetAllAsync<ReviewTransactionTable>("api/NZUCManagement/GetReviewerTransactions");
             _transactions = result.ToList();
+            
         }
         protected async Task<TableData<ReviewTransactionTable>> ServerReload(TableState state)
         {

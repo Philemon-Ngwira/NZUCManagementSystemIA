@@ -15,7 +15,7 @@ namespace NZUCManagementSystemIA.Client.Pages.AppPages
 
         protected EmployeeTable employee = new();
         protected EmployeeTable dialogemployee = new();
-        [Inject] IGenericRepositoryService? _genericRepository { get; set; }
+        [Inject] IGenericRepositoryService _genericRepository { get; set; }
         [CascadingParameter] MudDialogInstance MudDialog { get; set; }
         [Inject] IDialogService Dialog { get; set; }
         [Inject] ISnackbar Snackbar { get; set; }

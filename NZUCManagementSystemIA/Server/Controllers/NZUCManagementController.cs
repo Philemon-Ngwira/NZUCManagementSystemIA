@@ -7,7 +7,7 @@ using NZUCManagementSystemIA.Shared.Models;
 
 namespace NZUCManagementSystemIA.Server.Controllers
 {
-    [Authorize]
+   [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class NZUCManagementController : ControllerBase
@@ -107,6 +107,12 @@ namespace NZUCManagementSystemIA.Server.Controllers
             var result = await NZUCRepo.GetoperatingIncomeEX();
             return Ok(result);
         }
+        [HttpGet("GetStatuses")]
+        public async Task<IActionResult> GetStatuses()
+        {
+            var result = await NZUCRepo.GetAllAsync<TransactionStatus>();
+            return Ok(result);
+        }
 
         #endregion
         #region GetByForeignId
@@ -130,8 +136,15 @@ namespace NZUCManagementSystemIA.Server.Controllers
         #endregion
 
         #region Post to Database
+        
         [HttpPost("SaveEmployee")]
         public async Task<IActionResult> PostAreaAsync(EmployeeTable employee)
+        {
+            var result = await NZUCRepo.SaveAsync(employee);
+            return Ok(result);
+        }
+        [HttpPost("SavePermanentTransaction")]
+        public async Task<IActionResult> PostPermanentTransactionAsync(TransactionTable employee)
         {
             var result = await NZUCRepo.SaveAsync(employee);
             return Ok(result);
@@ -199,9 +212,12 @@ namespace NZUCManagementSystemIA.Server.Controllers
             await NZUCRepo.DeleteAllAsync(id);
             return NoContent();
         }
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete("DeleteReviewTransaction/{id}")]
+        public async Task<IActionResult> DeleteReviewTransactionAsync(int id)
         {
+
+            await NZUCRepo.DeleteReviewTransactionAsync(id);
+            return NoContent();
         }
     }
 }

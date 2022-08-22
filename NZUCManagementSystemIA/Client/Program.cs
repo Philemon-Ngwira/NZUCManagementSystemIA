@@ -17,6 +17,7 @@ builder.Services.AddHttpClient("NZUCManagementSystemIA.ServerAPI", client => cli
 builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("NZUCManagementSystemIA.ServerAPI"));
 builder.Services.AddMudServices();
 builder.Services.AddScoped<IGenericRepositoryService, GenericRepositoryService>();
+builder.Services.AddScoped<IMailingServiceClient, MailingServiceClient>();
 
 
 builder.Services.AddApiAuthorization();

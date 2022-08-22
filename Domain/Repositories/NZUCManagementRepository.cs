@@ -56,6 +56,7 @@ namespace NZUC_Domain.Repositories
                 .ThenInclude(x => x.Employee)
                 .Include(x => x.IncomeExpenseOperatingTypeNavigation)
                 .Include(x => x.Conference)
+                .Include(x => x.Department)
 
 
                 .ToListAsync();
@@ -95,6 +96,28 @@ namespace NZUC_Domain.Repositories
 
 
             return true;
+        }
+        public async Task<bool> DeleteReviewTransactionAsync(int id)
+        {
+            try
+            {
+                var siteToDelete = await _context.ReviewTransactionTables.FindAsync(id);
+                if (siteToDelete == null)
+                {
+                    return false;
+                }
+                _context.ReviewTransactionTables.Remove(siteToDelete);
+                await _context.SaveChangesAsync();
+
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                var _ = ex.Message;
+                throw;
+            }
+           
         }
 
         #region GetByForeignId

@@ -38,7 +38,7 @@
         </MudItem>
         <MudItem xs="12" sm="6">
             <MudPaper Class="d-flex flex-row pt-6 pb-4" Style="height:100px;">
-                <MudIcon Icon="@Icons.Filled.Money" Color="Color.Info" Class="mx-4" Style="width:54px; height:54px;"></MudIcon>
+                <MudIcon Icon="@Icons.Filled.Loop" Color="Color.Info" Class="mx-4" Style="width:54px; height:54px;"></MudIcon>
                 <div>
                     <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">RecordIncome</MudText>
                     <MudButton ButtonType="ButtonType.Submit" EndIcon="@Icons.Material.Filled.NavigateNext" OnClick="NavigateToOperatingIncome" Color="Color.Success">Record Income</MudButton>
@@ -48,7 +48,7 @@
         <MudItem xs="12">
            
             <MudTable ServerData="@(new Func<TableState, Task<TableData<ReviewTransactionTable>>>(ServerReload))"
-                      Hover="true" @ref="table" T="ReviewTransactionTable">
+                      Hover="true" @ref="table" T="ReviewTransactionTable" OnRowClick="OnRowClicked">
                 <ToolBarContent>
                     <MudText Typo="Typo.h6">Current Pending Payments</MudText>
                     <MudSpacer />
