@@ -16,6 +16,7 @@ namespace NZUCManagementSystemIA.Client.Pages.AppPages
         [CascadingParameter] MudDialogInstance MudDialog { get; set; }
         [Inject] IDialogService Dialog { get;set; }
         [Inject] NavigationManager NavigationManager { get; set; }
+        [Inject] HttpClient Http { get; set; }
         protected string searchString = "";
         protected int totalItems = 0;
         protected MudTable<ConferencesAndField> table;
@@ -109,8 +110,11 @@ namespace NZUCManagementSystemIA.Client.Pages.AppPages
             MudDialog.Close();
             NavigationManager.NavigateTo("/Pages/AppPages/ConferencesManagement", forceLoad: true);
         }
-        protected void Delete()
+        protected async void Delete(int id)
         {
+            await Http.DeleteAsync($"api/NZUCManagement/DeleteConference/{id}");
+            Snackbar.Add("Successfully Deleted", Severity.Error);
+            NavigationManager.NavigateTo("/Pages/AppPages/ConferencesManagement",forceLoad:true);
 
         }
         protected void Cancel()

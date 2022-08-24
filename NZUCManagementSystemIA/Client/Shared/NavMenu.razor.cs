@@ -15,13 +15,18 @@ namespace NZUCManagementSystemIA.Client.Shared
 
         protected override async Task OnInitializedAsync()
         {
+            var user = (await AuthenticationState.GetAuthenticationStateAsync()).User.Identity;
+            if (user != null && user.IsAuthenticated)
+            {
                 await GetTransactions();
+                TotalTransactions = _transactions.Count();
+            }
         }
         protected async Task GetTransactions()
         {
             var result = await _genericRepositoryService.GetAllAsync<ReviewTransactionTable>("api/NZUCManagement/GetReviewerTransactions");
             _transactions = result.ToList();
-            TotalTransactions = _transactions.Count();
+            
         }
     }
 }

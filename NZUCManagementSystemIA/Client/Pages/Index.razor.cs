@@ -14,7 +14,9 @@ namespace NZUCManagementSystemIA.Client.Pages
         protected IList<OperatingIncomeExpense> operatingIncomeExpenses = new List<OperatingIncomeExpense>();
         protected string incomeBudgetName = string.Empty;
         protected int? totalIncomeYearBudget = 0;
+        protected int? totalExpenseYearBudget = 0;
         protected string IncomeBudgetDisplay = string.Empty;
+        protected string ExpensesDisplay = string.Empty;
         protected string operatingIncomeName = string.Empty;
         protected string operatingExpenseName = string.Empty;
         protected string Info;
@@ -57,7 +59,7 @@ namespace NZUCManagementSystemIA.Client.Pages
         #region BarChart
         protected string[] DepartmentNames;
         protected int BarChartIndex = -1;
-        protected List<ChartSeries> DepartmentSpendSeries = new List<ChartSeries>();
+        protected List<ChartSeries> DepartmentSeries = new List<ChartSeries>();
         protected ChartSeries DepartmentSalarySpendSeries = new ChartSeries();
         protected ChartSeries DepartmentTravelExpenseSeries = new ChartSeries();
         protected bool notEnoughData;
@@ -272,12 +274,22 @@ namespace NZUCManagementSystemIA.Client.Pages
             ConferenceNames = Names.ToArray();
             datasize = 6;
             conferenceIncomeData = new double[_conferences.Count()];
-            conferenceIncomeData[0] = Convert.ToDouble(operatingIncomeExpenses.Where(x => x.Conference.ConferenceName == ConferenceNames[0]).Sum(x => x.Amount));
-            conferenceIncomeData[1] = Convert.ToDouble(operatingIncomeExpenses.Where(x => x.Conference.ConferenceName == ConferenceNames[1]).Sum(x => x.Amount));
-            conferenceIncomeData[2] = Convert.ToDouble(operatingIncomeExpenses.Where(x => x.Conference.ConferenceName == ConferenceNames[2]).Sum(x => x.Amount));
-            conferenceIncomeData[3] = Convert.ToDouble(operatingIncomeExpenses.Where(x => x.Conference.ConferenceName == ConferenceNames[3]).Sum(x => x.Amount));
-            conferenceIncomeData[4] = Convert.ToDouble(operatingIncomeExpenses.Where(x => x.Conference.ConferenceName == ConferenceNames[4]).Sum(x => x.Amount));
-            conferenceIncomeData[5] = Convert.ToDouble(operatingIncomeExpenses.Where(x => x.Conference.ConferenceName == ConferenceNames[5]).Sum(x => x.Amount));
+            IList<OperatingIncomeExpense> operas = new List<OperatingIncomeExpense>();
+            foreach (var item in operatingIncomeExpenses)
+            {
+                if(item.Conference != null)
+                {
+                    operas.Add(item);
+                }
+                   
+            }
+            conferenceIncomeData[0] = Convert.ToDouble(operas.Where(x => x.Conference.ConferenceName == ConferenceNames[0]).Sum(x => x.Amount));
+            conferenceIncomeData[1] = Convert.ToDouble(operas.Where(x => x.Conference.ConferenceName == ConferenceNames[1]).Sum(x => x.Amount));
+            conferenceIncomeData[2] = Convert.ToDouble(operas.Where(x => x.Conference.ConferenceName == ConferenceNames[2]).Sum(x => x.Amount));
+            conferenceIncomeData[3] = Convert.ToDouble(operas.Where(x => x.Conference.ConferenceName == ConferenceNames[3]).Sum(x => x.Amount));
+            conferenceIncomeData[4] = Convert.ToDouble(operas.Where(x => x.Conference.ConferenceName == ConferenceNames[4]).Sum(x => x.Amount));
+            conferenceIncomeData[5] = Convert.ToDouble(operas.Where(x => x.Conference.ConferenceName == ConferenceNames[5]).Sum(x => x.Amount));
+
         }
         #endregion
         #region BarChart
@@ -289,36 +301,29 @@ namespace NZUCManagementSystemIA.Client.Pages
             List<string> Names = new List<string>();
             foreach (var item in _departments)
             {
-                Names.Add(item.DepartmentName);
+                Names.Add(item.DepartmentCode);
             }
             DepartmentNames = Names.ToArray();
             DepartmentSalarySpendSeries.Name = "Department Costs";
             DepartmentSalarySpendSeries.Data = new double[_departments.Count()];
-            if (operatingIncomeExpenses.Any(x => x.Department == null))
+            IList<OperatingIncomeExpense> operatingswithDepartments = new List<OperatingIncomeExpense>();
+            foreach (var item in operatingIncomeExpenses)
             {
-                DepartmentSalarySpendSeries.Data[0] = 0;
-                DepartmentSalarySpendSeries.Data[1] = 0;
-                DepartmentSalarySpendSeries.Data[2] = 0;
-                DepartmentSalarySpendSeries.Data[3] = 0;
-                DepartmentSalarySpendSeries.Data[4] = 0;
-                DepartmentSalarySpendSeries.Data[5] = 0;
-                DepartmentSalarySpendSeries.Data[6] = 0;
-                DepartmentSalarySpendSeries.Data[7] = 0;
+                if(item.Department != null)
+                {
+                    operatingswithDepartments.Add(item);
+                }
                 
-
             }
-            else
-            {
-                DepartmentSalarySpendSeries.Data[0] = operatingIncomeExpenses.Where(x => x.Department.DepartmentName == DepartmentNames[0] && x.IncomeExpenseOperatingType == 2).Sum(x => Convert.ToDouble(x.Amount));
-                DepartmentSalarySpendSeries.Data[1] = operatingIncomeExpenses.Where(x => x.Department.DepartmentName == DepartmentNames[1] && x.IncomeExpenseOperatingType == 2).Sum(x => Convert.ToDouble(x.Amount));
-                DepartmentSalarySpendSeries.Data[2] = operatingIncomeExpenses.Where(x => x.Department.DepartmentName == DepartmentNames[2] && x.IncomeExpenseOperatingType == 2).Sum(x => Convert.ToDouble(x.Amount));
-                DepartmentSalarySpendSeries.Data[3] = operatingIncomeExpenses.Where(x => x.Department.DepartmentName == DepartmentNames[3] && x.IncomeExpenseOperatingType == 2).Sum(x => Convert.ToDouble(x.Amount));
-                DepartmentSalarySpendSeries.Data[4] = operatingIncomeExpenses.Where(x => x.Department.DepartmentName == DepartmentNames[4] && x.IncomeExpenseOperatingType == 2).Sum(x => Convert.ToDouble(x.Amount));
-                DepartmentSalarySpendSeries.Data[5] = operatingIncomeExpenses.Where(x => x.Department.DepartmentName == DepartmentNames[5] && x.IncomeExpenseOperatingType == 2).Sum(x => Convert.ToDouble(x.Amount));
-                DepartmentSalarySpendSeries.Data[6] = operatingIncomeExpenses.Where(x => x.Department.DepartmentName == DepartmentNames[6] && x.IncomeExpenseOperatingType == 2).Sum(x => Convert.ToDouble(x.Amount));
-                DepartmentSalarySpendSeries.Data[7] = operatingIncomeExpenses.Where(x => x.Department.DepartmentName == DepartmentNames[7] && x.IncomeExpenseOperatingType == 2).Sum(x => Convert.ToDouble(x.Amount));
-            }
-            DepartmentSpendSeries.Add(DepartmentSalarySpendSeries);
+            DepartmentSalarySpendSeries.Data[0] = operatingswithDepartments.Where(x => x.Department.DepartmentCode == DepartmentNames[0] && x.IncomeExpenseOperatingType == 2).Sum(x => Convert.ToDouble(x.Amount));
+            DepartmentSalarySpendSeries.Data[1] = operatingswithDepartments.Where(x => x.Department.DepartmentCode == DepartmentNames[1] && x.IncomeExpenseOperatingType == 2).Sum(x => Convert.ToDouble(x.Amount));
+            DepartmentSalarySpendSeries.Data[2] = operatingswithDepartments.Where(x => x.Department.DepartmentCode == DepartmentNames[2] && x.IncomeExpenseOperatingType == 2).Sum(x => Convert.ToDouble(x.Amount));
+            DepartmentSalarySpendSeries.Data[3] = operatingswithDepartments.Where(x => x.Department.DepartmentCode == DepartmentNames[3] && x.IncomeExpenseOperatingType == 2).Sum(x => Convert.ToDouble(x.Amount));
+            DepartmentSalarySpendSeries.Data[4] = operatingswithDepartments.Where(x => x.Department.DepartmentCode == DepartmentNames[4] && x.IncomeExpenseOperatingType == 2).Sum(x => Convert.ToDouble(x.Amount));
+            DepartmentSalarySpendSeries.Data[5] = operatingswithDepartments.Where(x => x.Department.DepartmentCode == DepartmentNames[5] && x.IncomeExpenseOperatingType == 2).Sum(x => Convert.ToDouble(x.Amount));
+            DepartmentSalarySpendSeries.Data[6] = operatingswithDepartments.Where(x => x.Department.DepartmentCode == DepartmentNames[6] && x.IncomeExpenseOperatingType == 2).Sum(x => Convert.ToDouble(x.Amount));
+            DepartmentSalarySpendSeries.Data[7] = operatingswithDepartments.Where(x => x.Department.DepartmentCode == DepartmentNames[7] && x.IncomeExpenseOperatingType == 2).Sum(x => Convert.ToDouble(x.Amount));
+            DepartmentSeries.Add(DepartmentSalarySpendSeries);
         }
 
         #endregion

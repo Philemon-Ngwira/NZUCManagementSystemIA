@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using MudBlazor;
 using NZUCManagementSystemIA.Client.Interfaces;
 using NZUCManagementSystemIA.Client.Pages.AppPages.Dialogues;
 using NZUCManagementSystemIA.Shared.Models;
+using static System.Net.WebRequestMethods;
 
 namespace NZUCManagementSystemIA.Client.Pages.AppPages
 {
@@ -16,6 +18,9 @@ namespace NZUCManagementSystemIA.Client.Pages.AppPages
         protected IncomeExpenseBudgetType _incomeExpensesType = new();
         [Inject] IGenericRepositoryService _genericRepositoryService { get; set; }
         [Inject] IDialogService Dialog { get; set; }
+        [Inject] ISnackbar Snackbar { get; set; }
+        [Inject] HttpClient Http { get; set; }
+        [Inject] NavigationManager Navigation { get; set; }
         protected string searchString ="";
         protected int totalItems;
         protected MudTable<YearlyBudgetTable> table;
@@ -112,5 +117,12 @@ namespace NZUCManagementSystemIA.Client.Pages.AppPages
         protected Func<IncomeExpenseBudgetType, string> IncomeExpesnseconverter = p => p?.IncomeBudgetType;
         protected Func<BudgetTypeTable, string> BudgetTypeconverter = p => p?.BudgetType;
         #endregion
+
+        protected async void DeleteBudget(int id)
+        {
+            await Http.DeleteAsync($"api/NZUCManagement/DeleteBudget/{id}");
+            Snackbar.Add("Successfully Deleted", Severity.Error);
+            Navigation.NavigateTo("Pages/AppPages/ManageBudgets", forceLoad: true);
+        }
     }
 }

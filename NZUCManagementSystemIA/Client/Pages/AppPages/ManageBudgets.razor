@@ -39,7 +39,7 @@ else
             <MudTd DataLabel="End Date">@context.YearEnd.Value.ToShortDateString()</MudTd>
             <MudTd DataLabel="BudgetName">@context.IncomeExpesense.IncomeBudgetType</MudTd>
             <MudTd DataLabel="BudgetType">@context.IncomeExpesense.TypeofBudget.BudgetType</MudTd>
-            <MudTd DataLabel="Action"> <MudFab Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Medium" ></MudFab></MudTd>
+            <MudTd DataLabel="Action"> <MudFab Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Medium" OnClick="@(() => DeleteBudget(context.Id))"></MudFab></MudTd>
 
         </RowTemplate>
         <NoRecordsContent>

@@ -8,12 +8,14 @@ namespace NZUCManagementSystemIA.Client.Pages.AppPages
 {
     public class DepartmentManagementBase : ComponentBase
     {
-        protected IList<Departments_Table> _departments =  new List<Departments_Table>();
+        protected IList<Departments_Table> _departments = new List<Departments_Table>();
         protected Departments_Table departments = new();
         [Inject] IGenericRepositoryService _repositoryService { get; set; }
         [Inject] IDialogService Dialog { get; set; }
         [Inject] ISnackbar Snackbar { get; set; }
         [CascadingParameter] MudDialogInstance DialogInstance { get; set; }
+        [Inject] HttpClient Http { get; set; }
+        [Inject] NavigationManager Navigation { get; set; }
 
         protected string? searchString;
         protected int totalItems;
@@ -28,7 +30,7 @@ namespace NZUCManagementSystemIA.Client.Pages.AppPages
         private async Task GetDepartment()
         {
             var result = await _repositoryService.GetAllAsync<Departments_Table>("api/NZUCManagement/GetDepartments");
-            _departments = result.ToList(); 
+            _departments = result.ToList();
         }
 
 
@@ -75,7 +77,7 @@ namespace NZUCManagementSystemIA.Client.Pages.AppPages
         protected async Task OpenDialog(Departments_Table department)
         {
             DialogOptions dialogOptions = new DialogOptions() { Position = DialogPosition.Center, MaxWidth = MaxWidth.Medium, FullWidth = true };
-            var parameters = new DialogParameters { ["department"] = department};
+            var parameters = new DialogParameters { ["department"] = department };
 
             var dialog = Dialog.Show<AddDepartmentDialog>("", parameters, dialogOptions);
             var result = await dialog.Result;
@@ -94,6 +96,13 @@ namespace NZUCManagementSystemIA.Client.Pages.AppPages
             var dialog = Dialog.Show<EditDepartmentDialog>("", parameters, dialogOptions);
             var result = await dialog.Result;
 
+        }
+
+        protected async void DeleteItem(int id)
+        {
+            await Http.DeleteAsync($"api/NZUCManagement/DeleteDepartment/{id}");
+            Snackbar.Add("Successfully Deleted", Severity.Error);
+            Navigation.NavigateTo("Pages/AppPages/DepartmentManagement", forceLoad: true);
         }
         #endregion
     }

@@ -3,6 +3,7 @@ using MudBlazor;
 using NZUCManagementSystemIA.Client.Interfaces;
 using NZUCManagementSystemIA.Client.Pages.AppPages.Dialogues;
 using NZUCManagementSystemIA.Shared.Models;
+using static System.Net.WebRequestMethods;
 
 namespace NZUCManagementSystemIA.Client.Pages.AppPages
 {
@@ -21,6 +22,7 @@ namespace NZUCManagementSystemIA.Client.Pages.AppPages
         [Inject]IDialogService DialogService { get; set; }
         [Inject] ISnackbar Snackbar { get; set; }
         [Inject] IDialogService Dialog { get; set; }
+        [Inject] HttpClient Http { get; set; }
         NavigationManager Navigation;
 
 
@@ -105,6 +107,14 @@ namespace NZUCManagementSystemIA.Client.Pages.AppPages
         {
             searchString = text;
             table.ReloadServerData();
+        }
+
+        protected async void Delete(int id)
+        {
+            await Http.DeleteAsync($"api/NZUCManagement/DeleteAuthorizer/{id}");
+            Snackbar.Add("Successfully Deleted", Severity.Error);
+            Navigation.NavigateTo("/Pages/AppPages/AuthorizerManagement", forceLoad: true);
+
         }
         #endregion
 

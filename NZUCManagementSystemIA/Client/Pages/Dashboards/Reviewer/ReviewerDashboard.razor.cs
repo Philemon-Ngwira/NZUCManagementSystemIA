@@ -216,7 +216,7 @@ namespace NZUCManagementSystemIA.Client.Pages.Dashboards.Reviewer
             SavePermanentTransaction();
             Snackbar.Add("Transaction Closed !", Severity.Success);
             MudDialog.Close();
-            Navigation.NavigateTo("/Pages/Dashboards/Reviewer/ReviewerDashboard");
+            Navigation.NavigateTo("/Pages/Dashboards/Reviewer/ReviewerDashboard",forceLoad:true);
 
         }
         protected async void Canceled()

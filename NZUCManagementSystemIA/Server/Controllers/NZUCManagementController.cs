@@ -204,7 +204,8 @@ namespace NZUCManagementSystemIA.Server.Controllers
             return Ok(res);
         }
         #endregion
-        // DELETE api/<NZUCManagementController>/5
+
+        #region Delete Functions
         [HttpDelete("DeleteSalaryScale/{id}")]
         public async Task<IActionResult> DeleteSalaryScaleAsync(int id)
         {
@@ -219,5 +220,50 @@ namespace NZUCManagementSystemIA.Server.Controllers
             await NZUCRepo.DeleteReviewTransactionAsync(id);
             return NoContent();
         }
+
+        [HttpDelete("DeleteDepartment/{id}")]
+        public async Task<IActionResult> DeleteDepartmentAsync(int id)
+        {
+
+            await NZUCRepo.DeleteDepartmentAsync(id);
+            return NoContent();
+        }
+        [HttpDelete("DeleteConference/{id}")]
+        public async Task<IActionResult> DeleteConferenceAsync(int id)
+        {
+
+            await NZUCRepo.DeleteConferenceAsync(id);
+            return NoContent();
+        }
+        [HttpDelete("DeleteAuthorizer/{id}")]
+        public async Task<IActionResult> DeleteAuthorizerAsync(int id)
+        {
+
+            await NZUCRepo.DeleteAuthorizerAsync(id);
+            return NoContent();
+        }
+        [HttpDelete("DeleteEmployee/{id}")]
+        public async Task<IActionResult> DeleteEmployeeAsync(int id)
+        {
+
+            await NZUCRepo.DeleteEmployeeAsync(id);
+            return NoContent();
+        }
+        [HttpDelete("DeleteBudget/{id}")]
+        public async Task<IActionResult> DeleteBudgetAsync(int id)
+        {
+
+            await NZUCRepo.DeleteBudgetAsync(id);
+            return NoContent();
+        }
+        
+        [HttpDelete("DeleteOperatingIncomeExp/{id}")]
+        public async Task<IActionResult> DeleteOperatingIncomeExpAsync(int id)
+        {
+
+            await NZUCRepo.DeleteOperatingIncomeExpAsync(id);
+            return NoContent();
+        }
+        #endregion
     }
 }

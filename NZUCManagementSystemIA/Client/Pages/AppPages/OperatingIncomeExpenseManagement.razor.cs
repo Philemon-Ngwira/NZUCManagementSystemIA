@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using MudBlazor;
 using NZUCManagementSystemIA.Client.Interfaces;
 using NZUCManagementSystemIA.Client.Pages.AppPages.Dialogues;
 using NZUCManagementSystemIA.Shared.Models;
+using static System.Net.WebRequestMethods;
 
 namespace NZUCManagementSystemIA.Client.Pages.AppPages
 {
@@ -26,6 +28,8 @@ namespace NZUCManagementSystemIA.Client.Pages.AppPages
         [Inject] IGenericRepositoryService _genericRepository { get; set; }
         [Inject] IDialogService? Dialog { get; set; }
         [Inject] ISnackbar Snackbar { get; set; }
+        [Inject] HttpClient Http { get; set; }
+        [Inject] NavigationManager Navigation { get; set; }
 
         protected string? searchString;
         protected bool? _hasConference;
@@ -162,7 +166,12 @@ namespace NZUCManagementSystemIA.Client.Pages.AppPages
 
 
         }
-
+        protected async void DeleteOPIncomeExp(int id)
+        {
+            await Http.DeleteAsync($"api/NZUCManagement/DeleteOperatingIncomeExp/{id}");
+            Snackbar.Add("Successfully Deleted", Severity.Error);
+            Navigation.NavigateTo("Pages/AppPages/OperatingIncomeExpenseManagement", forceLoad: true);
+        }
         protected void Cancel()
         {
             MudDialog.Close();

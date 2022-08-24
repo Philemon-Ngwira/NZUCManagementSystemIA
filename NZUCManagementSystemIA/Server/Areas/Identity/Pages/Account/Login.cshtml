@@ -1,55 +1,221 @@
-﻿@page 
+﻿@page
 @model LoginModel
 
 @{
-    ViewData["Title"] = "Log in";
+    //ViewData["Title"] = "Log in";
 }
 
-<h1>@ViewData["Title"]</h1>
-<div class="row">
-    <div class="col-md-8">
-        <section>
-            <form id="account" method="post">
-                <hr />
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-floating">
-                    <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" />
-                    <label asp-for="Input.Email" class="form-label"></label>
-                    <span asp-validation-for="Input.Email" class="text-danger"></span>
-                </div>
-                <div class="form-floating">
-                    <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" />
-                    <label asp-for="Input.Password" class="form-label"></label>
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
-                </div>
-                <div>
-                    <div class="checkbox">
-                        <label asp-for="Input.RememberMe" class="form-label">
-                            <input class="form-check-input" asp-for="Input.RememberMe" />
-                            @Html.DisplayNameFor(m => m.Input.RememberMe)
-                        </label>
-                    </div>
-                </div>
-                <div>
-                    <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
-                </div>
-                <div>
-                    <p>
-                        <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
-                    </p>
-                    <p>
-                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
-                    </p>
-                    <p>
-                        <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email confirmation</a>
-                    </p>
-                </div>
-            </form>
-        </section>
+<h3>@ViewData["Title"]</h3>
+
+
+
+<head>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/style.css">
+
+</head>
+
+<div id="login-box">
+    <div class="left">
+        <h6>Login In</h6>
+        <form id="account" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="inputs">
+                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" />
+                <br>
+                <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" />
+            </div>
+            <div class="checkbox">
+                <label asp-for="Input.RememberMe" class="form-label">
+                    <input class="form-check-input" asp-for="Input.RememberMe" />
+                    @Html.DisplayNameFor(m => m.Input.RememberMe)
+                </label>
+            </div>
+            <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
+            <div>
+                <p>
+                    <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
+                </p>
+                <p>
+                    <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
+                </p>
+                <p>
+                    <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email confirmation</a>
+                </p>
+            </div>
+        </form>
     </div>
 
+    <div class="right">
+        <h3 class="loginwith">NZUC MANAGEMENT  </h3>
+
+    </div>
 </div>
 
+
+<style>
+    *:focus {
+        outline: none;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        background: #DDD;
+        font-size: 16px;
+        color: #222;
+        font-family: 'Roboto', sans-serif;
+        font-weight: 300;
+    }
+
+    #login-box {
+        position: relative;
+        margin: 5% auto;
+        width: 600px;
+        height: 400px;
+        background: #FFF;
+        border-radius: 2px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    }
+
+    .left {
+        position: absolute;
+        top: 0;
+        left: 0;
+        box-sizing: border-box;
+        padding: 40px;
+        width: 300px;
+        height: 400px;
+    }
+
+    h1 {
+        margin: 0 0 20px 0;
+        font-weight: 300;
+        font-size: 28px;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+        display: block;
+        box-sizing: border-box;
+        margin-bottom: 20px;
+        padding: 4px;
+        width: 220px;
+        height: 32px;
+        border: none;
+        border-bottom: 1px solid #AAA;
+        font-family: 'Roboto', sans-serif;
+        font-weight: 400;
+        font-size: 15px;
+        transition: 0.2s ease;
+    }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            border-bottom: 2px solid #16a085;
+            color: #16a085;
+            transition: 0.2s ease;
+        }
+
+    input[type="submit"] {
+        margin-top: 28px;
+        width: 120px;
+        height: 32px;
+        background: #16a085;
+        border: none;
+        border-radius: 2px;
+        color: #FFF;
+        font-family: 'Roboto', sans-serif;
+        font-weight: 500;
+        text-transform: uppercase;
+        transition: 0.1s ease;
+        cursor: pointer;
+    }
+
+        input[type="submit"]:hover,
+        input[type="submit"]:focus {
+            opacity: 0.8;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+            transition: 0.1s ease;
+        }
+
+        input[type="submit"]:active {
+            opacity: 1;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+            transition: 0.1s ease;
+        }
+
+    .or {
+        position: absolute;
+        top: 180px;
+        left: 280px;
+        width: 40px;
+        height: 40px;
+        background: #DDD;
+        border-radius: 50%;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+        line-height: 40px;
+        text-align: center;
+    }
+
+    .right {
+        position: absolute;
+        top: 0;
+        right: 0;
+        box-sizing: border-box;
+        padding: 40px;
+        width: 300px;
+        height: 400px;
+        background-image: url("/images/Office1.png");
+        background-size: cover;
+        background-position: center;
+        border-radius: 0 2px 2px 0;
+    }
+
+        .right .loginwith {
+            display: block;
+            margin-bottom: 40px;
+            font-size: 28px;
+            color: #FFF;
+            text-align: center;
+        }
+
+    button.social-signin {
+        margin-bottom: 20px;
+        width: 220px;
+        height: 36px;
+        border: none;
+        border-radius: 2px;
+        color: #FFF;
+        font-family: 'Roboto', sans-serif;
+        font-weight: 500;
+        transition: 0.2s ease;
+        cursor: pointer;
+    }
+
+        button.social-signin:hover,
+        button.social-signin:focus {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+            transition: 0.2s ease;
+        }
+
+        button.social-signin:active {
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+            transition: 0.2s ease;
+        }
+
+        button.social-signin.facebook {
+            background: #32508E;
+        }
+
+        button.social-signin.twitter {
+            background: #55ACEE;
+        }
+
+        button.social-signin.google {
+            background: #DD4B39;
+        }
+</style>
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }

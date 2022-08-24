@@ -46,8 +46,8 @@
                 <MudPaper Class="d-flex flex-row pt-6 pb-4" Style="height:100px;">
                     <MudIcon Icon="@Icons.Filled.CurrencyExchange" Color="Color.Error" Class="mx-4" Style="width:54px; height:54px;"></MudIcon>
                     <div>
-                        <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">Total Expense Budget</MudText>
-                        <MudText Typo="Typo.h5">8,000,000</MudText>
+                        <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">Total Expense</MudText>
+                        <MudText Typo="Typo.h5">@ExpenseDisplay</MudText>
                     </div>
                 </MudPaper>
             </MudItem>
@@ -143,7 +143,7 @@
             <MudItem xs="12">
                 <MudPaper>
                     <MudText Typo="Typo.subtitle1" Color="Color.Primary"><strong><i>Expense By Department</i></strong></MudText>
-                    @if (DepartmentSpendSeries.Count() == 0)
+                    @if (DepartmentSeries.Count() == 0)
                     {
                         @if (Info == null)
                         {
@@ -158,10 +158,9 @@
                     }
                     else
                     {
-
-
-                        <MudChart ChartType="ChartType.Bar" ChartSeries="@DepartmentSpendSeries" @bind-SelectedIndex="BarChartIndex" XAxisLabels="@DepartmentNames" Width="100%" Height="350px"></MudChart>
-
+                        <div>
+                            <MudChart ChartType="ChartType.Line"  ChartSeries="@DepartmentSeries" @bind-SelectedIndex="DepIndex" XAxisLabels="@DepartmentNames" Width="100%" Height="550px"></MudChart>
+                        </div>
                     }
                 </MudPaper>
             </MudItem>
@@ -180,4 +179,13 @@
 
 
 </AuthorizeView>
+
+@code{
+    private int DepIndex = -1; //default value cannot be 0 -> first selectedindex is 0.
+
+   
+
+   
+}
+
 

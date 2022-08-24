@@ -117,9 +117,145 @@ namespace NZUC_Domain.Repositories
                 var _ = ex.Message;
                 throw;
             }
-           
+
         }
 
+        public async Task<bool> DeleteDepartmentAsync(int id)
+        {
+            try
+            {
+                var siteToDelete = await _context.Departments_Tables.FindAsync(id);
+                if (siteToDelete == null)
+                {
+                    return false;
+                }
+                _context.Departments_Tables.Remove(siteToDelete);
+                await _context.SaveChangesAsync();
+
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                var _ = ex.Message;
+                throw;
+            }
+
+        }
+        public async Task<bool> DeleteConferenceAsync(int id)
+        {
+            try
+            {
+                var siteToDelete = await _context.ConferencesAndFields.FindAsync(id);
+                if (siteToDelete == null)
+                {
+                    return false;
+                }
+                _context.ConferencesAndFields.Remove(siteToDelete);
+                await _context.SaveChangesAsync();
+
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                var _ = ex.Message;
+                throw;
+            }
+
+        }
+
+        public async Task<bool> DeleteAuthorizerAsync(int id)
+        {
+            try
+            {
+                var siteToDelete = await _context.AuthorizerTables.FindAsync(id);
+                if (siteToDelete == null)
+                {
+                    return false;
+                }
+                _context.AuthorizerTables.Remove(siteToDelete);
+                await _context.SaveChangesAsync();
+
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                var _ = ex.Message;
+                throw;
+            }
+
+        }
+
+        public async Task<bool> DeleteEmployeeAsync(int id)
+        {
+            try
+            {
+                var siteToDelete = await _context.EmployeeTables.FindAsync(id);
+                if (siteToDelete == null)
+                {
+                    return false;
+                }
+                _context.EmployeeTables.Remove(siteToDelete);
+                await _context.SaveChangesAsync();
+
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                var _ = ex.Message;
+                throw;
+            }
+
+        }
+      
+        public async Task<bool> DeleteOperatingIncomeExpAsync(int id)
+        {
+            try
+            {
+                var siteToDelete = await _context.OperatingIncomeExpenses.FindAsync(id);
+                if (siteToDelete == null)
+                {
+                    return false;
+                }
+                _context.OperatingIncomeExpenses.Remove(siteToDelete);
+                await _context.SaveChangesAsync();
+
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                var _ = ex.Message;
+                throw;
+            }
+
+        }
+
+        public async Task<bool> DeleteBudgetAsync(int id)
+        {
+            try
+            {
+                var siteToDelete = await _context.YearlyBudgetTables.FindAsync(id);
+                if (siteToDelete == null)
+                {
+                    return false;
+                }
+                _context.YearlyBudgetTables.Remove(siteToDelete);
+                await _context.SaveChangesAsync();
+
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                var _ = ex.Message;
+                throw;
+            }
+
+        }
         #region GetByForeignId
         public IEnumerable<IncomeExpenseBudgetType> GetIncomeExpenseBudgets(int BudgetType)
         {

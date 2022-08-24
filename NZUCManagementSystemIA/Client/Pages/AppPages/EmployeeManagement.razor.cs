@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using MudBlazor;
 using NZUCManagementSystemIA.Client.Interfaces;
 using NZUCManagementSystemIA.Client.Pages.AppPages.Dialogues;
 using NZUCManagementSystemIA.Shared.Models;
+using static System.Net.WebRequestMethods;
 
 namespace NZUCManagementSystemIA.Client.Pages.AppPages
 {
@@ -19,7 +21,8 @@ namespace NZUCManagementSystemIA.Client.Pages.AppPages
         [CascadingParameter] MudDialogInstance MudDialog { get; set; }
         [Inject] IDialogService Dialog { get; set; }
         [Inject] ISnackbar Snackbar { get; set; }
-
+        [Inject] HttpClient Http { get; set; }
+        [Inject] NavigationManager Navigation { get; set; }
         protected string searchString = null;
         protected int totalemployees;
         protected MudTable<EmployeeTable> table;
@@ -108,8 +111,6 @@ namespace NZUCManagementSystemIA.Client.Pages.AppPages
         }
         #endregion
 
-
-
         #region Table Code
         protected async Task<TableData<EmployeeTable>> ServerReload(TableState state)
         {
@@ -166,5 +167,12 @@ namespace NZUCManagementSystemIA.Client.Pages.AppPages
         protected Func<Departments_Table, string> Departmentconverter = p => p?.DepartmentName;
         protected Func<SalaryTable, string> Salaryconverter = p => p?.SalaryTier;
         #endregion
+
+        protected async void DeleteItem(int id)
+        {
+            await Http.DeleteAsync($"api/NZUCManagement/DeleteEmployee/{id}");
+            Snackbar.Add("Successfully Deleted", Severity.Error);
+            Navigation.NavigateTo("Pages/AppPages/EmployeeManagement", forceLoad: true);
+        }
     }
 }
