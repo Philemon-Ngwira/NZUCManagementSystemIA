@@ -164,7 +164,7 @@ namespace NZUCManagementSystemIA.Client.Pages.Dashboards.Authorizer
             ReviewTransactionTable.Reviewer = null;
             ReviewTransactionTable.Department = null;
             ReviewTransactionTable.PaymentType = null;
-            _genericRepositoryService.UpdateAsync<ReviewTransactionTable>("api/NZUCManagement/UpdateTransaction", ReviewTransactionTable);
+            _genericRepositoryService.UpdateAsync("api/NZUCManagement/UpdateTransaction", ReviewTransactionTable);
             MudDialog.Close();
             Snackbar.Add("Approved!", Severity.Success);
 

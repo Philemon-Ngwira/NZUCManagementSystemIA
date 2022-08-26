@@ -34,7 +34,7 @@ namespace NZUCManagementSystemIA.Client.Pages.AppPages
             await GetEmployees();
             await GetGenders();
             await GetDepartments();
-            await GetSalaries();
+            await GetSalaries(); 
         }
 
         #region GetFunctions

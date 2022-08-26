@@ -17,29 +17,31 @@
             <MudNavLink Href="/Pages/Dashboards/Reviewer/ReviewerDashboard" Match="NavLinkMatch.All" Icon="@Icons.Filled.Checklist">Reviewer Dashboard</MudNavLink>
         </Authorized>
     </AuthorizeView>
+    <AuthorizeView>
+        <MudNavGroup Title="Employee Management" Expanded="false" Icon="@Icons.Filled.PeopleAlt">
+            <MudNavLink Href="/Pages/AppPages/AddEmployee" Match="NavLinkMatch.Prefix" Icon="@Icons.Filled.PersonAddAlt1">Add Employee</MudNavLink>
+            <MudNavLink Href="/Pages/AppPages/EmployeeManagement" Match="NavLinkMatch.Prefix" Icon="@Icons.Filled.ManageAccounts">Manage Employees</MudNavLink>
+            <MudNavLink Href="/Pages/AppPages/ReviewersManagement" Match="NavLinkMatch.Prefix" Icon="@Icons.Filled.RateReview">Manage Reviewers</MudNavLink>
+            <MudNavLink Href="/Pages/AppPages/AuthorizerManagement" Match="NavLinkMatch.Prefix" Icon="@Icons.Filled.Approval">Manage Authorizers</MudNavLink>
+        </MudNavGroup>
+        <MudNavGroup Title="Salary Management" Expanded="false" Icon="@Icons.Filled.CreditCard">
+            <MudNavLink Href="/Pages/AppPages/SalaryScaleManagement" Icon="@Icons.Filled.CreditCard" Match="NavLinkMatch.Prefix">Manage SalaryScales</MudNavLink>
+        </MudNavGroup>
+        <MudNavGroup Title="Departments And Conferences" Expanded="false" Icon="@Icons.Filled.HomeWork">
+            <MudNavLink Href="/Pages/AppPages/DepartmentManagement" Icon="@Icons.Filled.BusinessCenter" Match="NavLinkMatch.Prefix">Manage Departments</MudNavLink>
+            <MudNavLink Href="/Pages/AppPages/ConferencesManagement" Icon="@Icons.Filled.Warehouse" Match="NavLinkMatch.Prefix">Conference Managements</MudNavLink>
+        </MudNavGroup>
+        <MudNavGroup Title="Budgets And Operating Money" Expanded="false" Icon="@Icons.Filled.AccountBalanceWallet">
+            <MudNavLink Href="/Pages/AppPages/AddNewBudget" Match="NavLinkMatch.Prefix">New Budget</MudNavLink>
+            <MudNavLink Href="/Pages/AppPages/ManageBudgets" Match="NavLinkMatch.Prefix">Manage Budgets</MudNavLink>
+        </MudNavGroup>
+        <MudNavLink Href="/about" Match="NavLinkMatch.Prefix">About</MudNavLink>
+        <MudNavLink Href="/Pages/AppPages/LogOut" Icon="@Icons.Filled.Logout" Match="NavLinkMatch.Prefix">Log Out</MudNavLink>
+    </AuthorizeView>
 
-    <MudNavGroup Title="Employee Management" Expanded="false" Icon="@Icons.Filled.PeopleAlt">
-        <MudNavLink Href="/Pages/AppPages/AddEmployee" Match="NavLinkMatch.Prefix" Icon="@Icons.Filled.PersonAddAlt1">Add Employee</MudNavLink>
-        <MudNavLink Href="/Pages/AppPages/EmployeeManagement" Match="NavLinkMatch.Prefix" Icon="@Icons.Filled.ManageAccounts">Manage Employees</MudNavLink>
-        <MudNavLink Href="/Pages/AppPages/ReviewersManagement" Match="NavLinkMatch.Prefix" Icon="@Icons.Filled.RateReview">Manage Reviewers</MudNavLink>
-        <MudNavLink Href="/Pages/AppPages/AuthorizerManagement" Match="NavLinkMatch.Prefix" Icon="@Icons.Filled.Approval">Manage Authorizers</MudNavLink>
-    </MudNavGroup>
-    <MudNavGroup Title="Salary Management" Expanded="false" Icon="@Icons.Filled.CreditCard">
-        <MudNavLink Href="/Pages/AppPages/SalaryScaleManagement" Icon="@Icons.Filled.CreditCard" Match="NavLinkMatch.Prefix">Manage SalaryScales</MudNavLink>
-    </MudNavGroup>
-    <MudNavGroup Title="Departments And Conferences" Expanded="false" Icon="@Icons.Filled.HomeWork">
-        <MudNavLink Href="/Pages/AppPages/DepartmentManagement" Icon="@Icons.Filled.BusinessCenter" Match="NavLinkMatch.Prefix">Manage Departments</MudNavLink>
-        <MudNavLink Href="/Pages/AppPages/ConferencesManagement" Icon="@Icons.Filled.Warehouse" Match="NavLinkMatch.Prefix">Conference Managements</MudNavLink>
-    </MudNavGroup>
-    <MudNavGroup Title="Budgets And Operating Money" Expanded="false" Icon="@Icons.Filled.AccountBalanceWallet">
-        <MudNavLink Href="/Pages/AppPages/AddNewBudget" Match="NavLinkMatch.Prefix">New Budget</MudNavLink>
-        <MudNavLink Href="/Pages/AppPages/ManageBudgets" Match="NavLinkMatch.Prefix">Manage Budgets</MudNavLink>
-    </MudNavGroup>
-    <MudNavLink Href="/about" Match="NavLinkMatch.Prefix">About</MudNavLink>
-    <MudNavLink Href="/Pages/AppPages/LogOut" Icon="@Icons.Filled.Logout" Match="NavLinkMatch.Prefix">Log Out</MudNavLink>
 </MudNavMenu>
 
-@code{
+@code {
     [Inject] AuthenticationStateProvider AuthenticationState { get; set; }
     [Inject] IGenericRepositoryService GenericRepositoryService { get; set; }
     protected IList<ReviewTransactionTable> _transactions = new List<ReviewTransactionTable>();

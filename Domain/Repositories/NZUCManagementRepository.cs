@@ -77,6 +77,8 @@ namespace NZUC_Domain.Repositories
             var result = await _context.ReviewersTables
                 .Include(x => x.Employee)
                 .ThenInclude(x => x.SalaryNavigation)
+                .Include(x => x.Employee)
+                .ThenInclude(x => x.Department)
 
 
                 .ToListAsync();
