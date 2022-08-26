@@ -86,6 +86,8 @@ namespace NZUCManagementSystemIA.Client.Pages.AppPages
 
                 await _genericRepository.UpdateAsync("api/NZUCManagement/UpdateEmployee", employee);
                 Snackbar.Add("Succefully Updated", Severity.Success);
+                Navigation.NavigateTo("Pages/AppPages/EmployeeManagement", forceLoad: true);
+
             }
             catch (Exception ex)
             {

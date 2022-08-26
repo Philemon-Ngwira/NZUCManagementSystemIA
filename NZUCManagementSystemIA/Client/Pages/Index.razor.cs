@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using MudBlazor;
 using NZUCManagementSystemIA.Client.Interfaces;
+using NZUCManagementSystemIA.Client.Services;
 using NZUCManagementSystemIA.Shared.Models;
 
 namespace NZUCManagementSystemIA.Client.Pages
@@ -28,6 +29,7 @@ namespace NZUCManagementSystemIA.Client.Pages
 
         #region Employee Variables
         protected IList<EmployeeTable> employees = new List<EmployeeTable>();
+        
         protected int totalEmployees = 0;
         #endregion
 
@@ -63,13 +65,16 @@ namespace NZUCManagementSystemIA.Client.Pages
         protected ChartSeries DepartmentSalarySpendSeries = new ChartSeries();
         protected ChartSeries DepartmentTravelExpenseSeries = new ChartSeries();
         protected bool notEnoughData;
+        protected double[] DepartmentExpenseData = new double[8];
         //{
         //    new ChartSeries() { Name = "United States", Data = new double[] { 40, 20, 25, 27, 46, 60, 48, 80, 15 } },
         //    new ChartSeries() { Name = "Germany", Data = new double[] { 19, 24, 35, 13, 28, 15, 13, 16, 31 } },
         //    new ChartSeries() { Name = "Sweden", Data = new double[] { 8, 6, 11, 13, 4, 16, 10, 16, 18 } },
         //};
 
+
         #endregion
+
         #endregion
 
         #region Injections
@@ -81,6 +86,7 @@ namespace NZUCManagementSystemIA.Client.Pages
 
         protected override async Task OnInitializedAsync()
         {
+            
             var user = (await AuthenticationState.GetAuthenticationStateAsync()).User.Identity;
             if (user != null && user.IsAuthenticated)
             {
@@ -92,9 +98,11 @@ namespace NZUCManagementSystemIA.Client.Pages
                 await GetBarChartData();
                 Delays();
             }
+        
         }
 
         #region Functions
+        
         protected async Task GetBudgets()
         {
             var result = await _genericRepository.GetAllAsync<YearlyBudgetTable>("api/NZUCManagement/GetBudgets");
@@ -304,25 +312,28 @@ namespace NZUCManagementSystemIA.Client.Pages
                 Names.Add(item.DepartmentCode);
             }
             DepartmentNames = Names.ToArray();
-            DepartmentSalarySpendSeries.Name = "Department Costs";
-            DepartmentSalarySpendSeries.Data = new double[_departments.Count()];
             IList<OperatingIncomeExpense> operatingswithDepartments = new List<OperatingIncomeExpense>();
             foreach (var item in operatingIncomeExpenses)
             {
-                if(item.Department != null)
+                if (item.Department != null)
                 {
                     operatingswithDepartments.Add(item);
                 }
-                
+
             }
-            DepartmentSalarySpendSeries.Data[0] = operatingswithDepartments.Where(x => x.Department.DepartmentCode == DepartmentNames[0] && x.IncomeExpenseOperatingType == 2).Sum(x => Convert.ToDouble(x.Amount));
-            DepartmentSalarySpendSeries.Data[1] = operatingswithDepartments.Where(x => x.Department.DepartmentCode == DepartmentNames[1] && x.IncomeExpenseOperatingType == 2).Sum(x => Convert.ToDouble(x.Amount));
-            DepartmentSalarySpendSeries.Data[2] = operatingswithDepartments.Where(x => x.Department.DepartmentCode == DepartmentNames[2] && x.IncomeExpenseOperatingType == 2).Sum(x => Convert.ToDouble(x.Amount));
-            DepartmentSalarySpendSeries.Data[3] = operatingswithDepartments.Where(x => x.Department.DepartmentCode == DepartmentNames[3] && x.IncomeExpenseOperatingType == 2).Sum(x => Convert.ToDouble(x.Amount));
-            DepartmentSalarySpendSeries.Data[4] = operatingswithDepartments.Where(x => x.Department.DepartmentCode == DepartmentNames[4] && x.IncomeExpenseOperatingType == 2).Sum(x => Convert.ToDouble(x.Amount));
-            DepartmentSalarySpendSeries.Data[5] = operatingswithDepartments.Where(x => x.Department.DepartmentCode == DepartmentNames[5] && x.IncomeExpenseOperatingType == 2).Sum(x => Convert.ToDouble(x.Amount));
-            DepartmentSalarySpendSeries.Data[6] = operatingswithDepartments.Where(x => x.Department.DepartmentCode == DepartmentNames[6] && x.IncomeExpenseOperatingType == 2).Sum(x => Convert.ToDouble(x.Amount));
-            DepartmentSalarySpendSeries.Data[7] = operatingswithDepartments.Where(x => x.Department.DepartmentCode == DepartmentNames[7] && x.IncomeExpenseOperatingType == 2).Sum(x => Convert.ToDouble(x.Amount));
+            
+            DepartmentExpenseData[0] = operatingswithDepartments.Where(x => x.Department.DepartmentCode == DepartmentNames[0] && x.IncomeExpenseOperatingType == 2).Sum(x => Convert.ToDouble(x.Amount));
+            DepartmentExpenseData[1] = operatingswithDepartments.Where(x => x.Department.DepartmentCode == DepartmentNames[1] && x.IncomeExpenseOperatingType == 2).Sum(x => Convert.ToDouble(x.Amount));
+            DepartmentExpenseData[2] = operatingswithDepartments.Where(x => x.Department.DepartmentCode == DepartmentNames[2] && x.IncomeExpenseOperatingType == 2).Sum(x => Convert.ToDouble(x.Amount));
+            DepartmentExpenseData[3] = operatingswithDepartments.Where(x => x.Department.DepartmentCode == DepartmentNames[3] && x.IncomeExpenseOperatingType == 2).Sum(x => Convert.ToDouble(x.Amount));
+            DepartmentExpenseData[4] = operatingswithDepartments.Where(x => x.Department.DepartmentCode == DepartmentNames[4] && x.IncomeExpenseOperatingType == 2).Sum(x => Convert.ToDouble(x.Amount));
+            DepartmentExpenseData[5] = operatingswithDepartments.Where(x => x.Department.DepartmentCode == DepartmentNames[5] && x.IncomeExpenseOperatingType == 2).Sum(x => Convert.ToDouble(x.Amount));
+            DepartmentExpenseData[6] = operatingswithDepartments.Where(x => x.Department.DepartmentCode == DepartmentNames[6] && x.IncomeExpenseOperatingType == 2).Sum(x => Convert.ToDouble(x.Amount));
+            DepartmentExpenseData[7] = operatingswithDepartments.Where(x => x.Department.DepartmentCode == DepartmentNames[7] && x.IncomeExpenseOperatingType == 2).Sum(x => Convert.ToDouble(x.Amount));
+            DepartmentSalarySpendSeries.Name = "Department Costs";
+            DepartmentSalarySpendSeries.Data = DepartmentExpenseData;
+            
+            
             DepartmentSeries.Add(DepartmentSalarySpendSeries);
         }
 

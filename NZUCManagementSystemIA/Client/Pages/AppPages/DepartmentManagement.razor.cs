@@ -17,6 +17,7 @@ namespace NZUCManagementSystemIA.Client.Pages.AppPages
         [Inject] HttpClient Http { get; set; }
         [Inject] NavigationManager Navigation { get; set; }
 
+
         protected string? searchString;
         protected int totalItems;
         protected IEnumerable<Departments_Table>? PagedData;
@@ -97,7 +98,24 @@ namespace NZUCManagementSystemIA.Client.Pages.AppPages
             var result = await dialog.Result;
 
         }
-
+        protected async Task Save()
+        {
+            await _repositoryService.SaveAllAsync<Departments_Table>("api/NZUCManagement/SaveDepartment", departments);
+            Snackbar.Add("Succesfully Saved", Severity.Success);
+            DialogInstance.Close();
+            Navigation.NavigateTo("Pages/AppPages/DepartmentManagement", forceLoad: true);
+        }
+        protected async void EditSave()
+        {
+            await _repositoryService.UpdateAsync("api/NZUCManagement/UpdateDepartment", departments);
+            Snackbar.Add("Succesfully Updated", Severity.Success);
+            DialogInstance.Close();
+            Navigation.NavigateTo("Pages/AppPages/DepartmentManagement", forceLoad: true);
+        }
+        protected void Cancel()
+        {
+            DialogInstance.Close();
+        }
         protected async void DeleteItem(int id)
         {
             await Http.DeleteAsync($"api/NZUCManagement/DeleteDepartment/{id}");

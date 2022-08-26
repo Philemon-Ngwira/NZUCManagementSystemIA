@@ -4,7 +4,7 @@ using MudBlazor;
 using NZUCManagementSystemIA.Client.Interfaces;
 using NZUCManagementSystemIA.Client.Pages.AppPages.Dialogues;
 using NZUCManagementSystemIA.Shared.Models;
-using static System.Net.WebRequestMethods;
+//using static System.Net.WebRequestMethods;
 
 namespace NZUCManagementSystemIA.Client.Pages.AppPages
 {
@@ -39,18 +39,18 @@ namespace NZUCManagementSystemIA.Client.Pages.AppPages
             await GetOperatingTypes();
             await GetReviewers();
             await GetOperatingIncomeExpense();
-           
+
         }
 
         protected void OnIncomeOperatingTypeClicked()
         {
             conferencesAndFields.Clear();
-           if(incomeExpensesOperatingType.Id == 2 || incomeExpensesOperatingType.Id ==  3)
+            if (incomeExpensesOperatingType.Id == 2 || incomeExpensesOperatingType.Id == 3)
             {
-                _hasConference = true ;
+                _hasConference = true;
                 GetConferences().GetAwaiter();
             }
-           else
+            else
             {
                 _hasConference = false;
             }
@@ -146,8 +146,11 @@ namespace NZUCManagementSystemIA.Client.Pages.AppPages
 
             operatingIncomeExpense.ReviewerId = operatingIncomeExpense.Reviewer.Id;
             operatingIncomeExpense.IncomeExpenseOperatingType = operatingType.Id;
-            operatingIncomeExpense.ConferenceId = operatingIncomeExpense.Conference.Id;
-            operatingIncomeExpense.Conference = null;
+            if (operatingIncomeExpense.Conference != null)
+            {
+                operatingIncomeExpense.ConferenceId = operatingIncomeExpense.Conference.Id;
+                operatingIncomeExpense.Conference = null;
+            }
             operatingIncomeExpense.Reviewer = null;
             operatingIncomeExpense.IncomeExpenseOperatingTypeNavigation = null;
             try
@@ -155,6 +158,7 @@ namespace NZUCManagementSystemIA.Client.Pages.AppPages
                 await _genericRepository.SaveAllAsync("api/NZUCManagement/SaveOperatingIncomeExpense", operatingIncomeExpense);
                 Snackbar.Add("Recorded Added!", Severity.Success);
                 MudDialog.Close();
+                Navigation.NavigateTo("Pages/AppPages/OperatingIncomeExpenseManagement", forceLoad: true);
             }
             catch (Exception ex)
             {
@@ -162,7 +166,7 @@ namespace NZUCManagementSystemIA.Client.Pages.AppPages
                 Snackbar.Add("Error Adding Record", Severity.Error);
                 throw;
             }
-           
+
 
 
         }
@@ -180,7 +184,7 @@ namespace NZUCManagementSystemIA.Client.Pages.AppPages
 #pragma warning disable CS8603 // Possible null reference return.
         protected Func<IncomeExpensesOperatingType, string> converter = p => p?.IncomeExpenseType;
 #pragma warning restore CS8603 // Possible null reference return.
-        protected Func<ReviewersTable, string> Reviewerconverter = p => p?.Employee.EmployeeName; 
+        protected Func<ReviewersTable, string> Reviewerconverter = p => p?.Employee.EmployeeName;
         protected Func<OperatingType, string> Typeconverter = p => p?.OperatingType1;
         protected Func<ConferencesAndField, string> Conferenceconverter = p => p?.ConferenceName;
         #endregion

@@ -11,11 +11,16 @@
         </MudCard>
     </DialogContent>
     <DialogActions>
-        <MudButton Color="Color.Error" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Cancel">Cancel</MudButton>
-         <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Success" EndIcon="@Icons.Material.Filled.SaveAlt">Submit</MudButton>
+        <MudButton Color="Color.Error" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Cancel" OnClick="Cancel">Cancel</MudButton>
+         <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Success" EndIcon="@Icons.Material.Filled.SaveAlt" OnClick="Submit">Submit</MudButton>
     </DialogActions>
 </MudDialog>
 
 @code {
     [Parameter] public Departments_Table department { get; set; } = new();
+
+    private void Submit(){
+        departments = department;
+        Save();
+    }
 }

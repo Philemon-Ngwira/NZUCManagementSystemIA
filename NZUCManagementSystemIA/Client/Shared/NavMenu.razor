@@ -1,17 +1,15 @@
-﻿
+﻿@using NZUCManagementSystemIA.Client.Interfaces
+@using NZUCManagementSystemIA.Client.Pages
+@using NZUCManagementSystemIA.Shared.Models
+
 <MudNavMenu>
     <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Filled.SpaceDashboard">Dashboard</MudNavLink>
     <AuthorizeView Roles="Authorizer">
         <Authorized>
-            @if(TotalTransactions == 0)
-            {
-               <MudNavLink Href="/Pages/Dashboards/Authorizer/AuthorizerDashboard" Match="NavLinkMatch.All" Icon="@Icons.Filled.AdminPanelSettings">Authorize Dashboard</MudNavLink>
-            }
-            else{
-            <MudBadge Content="TotalTransactions" Color="Color.Primary" Overlap="true" Class="my-4">
-                    <MudNavLink Href="/Pages/Dashboards/Authorizer/AuthorizerDashboard" Match="NavLinkMatch.All" Icon="@Icons.Filled.AdminPanelSettings">Authorize Dashboard</MudNavLink>
-                </MudBadge>
-            }
+            <MudBadge Content="@_transactions.Count()" Color="Color.Primary" Overlap="true" Class="my-4">
+                <MudNavLink Href="/Pages/Dashboards/Authorizer/AuthorizerDashboard" Match="NavLinkMatch.All" Icon="@Icons.Filled.AdminPanelSettings">Authorize Dashboard</MudNavLink>
+            </MudBadge>
+
         </Authorized>
     </AuthorizeView>
     <AuthorizeView Roles="Reviewer">
@@ -36,49 +34,42 @@
     <MudNavGroup Title="Budgets And Operating Money" Expanded="false" Icon="@Icons.Filled.AccountBalanceWallet">
         <MudNavLink Href="/Pages/AppPages/AddNewBudget" Match="NavLinkMatch.Prefix">New Budget</MudNavLink>
         <MudNavLink Href="/Pages/AppPages/ManageBudgets" Match="NavLinkMatch.Prefix">Manage Budgets</MudNavLink>
-        <MudNavLink Href="/Pages/AppPages/OperatingIncomeExpenseManagement" Match="NavLinkMatch.Prefix">Manage Operating Income/Expenses</MudNavLink>
     </MudNavGroup>
     <MudNavLink Href="/about" Match="NavLinkMatch.Prefix">About</MudNavLink>
     <MudNavLink Href="/Pages/AppPages/LogOut" Icon="@Icons.Filled.Logout" Match="NavLinkMatch.Prefix">Log Out</MudNavLink>
 </MudNavMenu>
 
-@*<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">NZUCManagementSystemIA</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-</div>
-
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="fetchdata">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
-            </NavLink>
-        </div>
-    </nav>
-</div>
-
-@code {
-    private bool collapseNavMenu = true;
-
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    private void ToggleNavMenu()
+@code{
+    [Inject] AuthenticationStateProvider AuthenticationState { get; set; }
+    [Inject] IGenericRepositoryService GenericRepositoryService { get; set; }
+    protected IList<ReviewTransactionTable> _transactions = new List<ReviewTransactionTable>();
+    protected override async Task OnInitializedAsync()
     {
-        collapseNavMenu = !collapseNavMenu;
+        var user = (await AuthenticationState.GetAuthenticationStateAsync()).User.Identity;
+        if (user != null && user.IsAuthenticated)
+        {
+            var timer = new PeriodicTimer(TimeSpan.FromSeconds(3));
+
+            while (await timer.WaitForNextTickAsync())
+            {
+
+                await GetTransactions();
+
+            }
+        }
+    }
+
+
+    protected async Task GetTransactions()
+    {
+        {
+            var user = (await AuthenticationState.GetAuthenticationStateAsync()).User;
+            if (user.IsInRole("Authorizer"))
+            {
+                var result = await GenericRepositoryService.GetAllAsync<ReviewTransactionTable>("api/NZUCManagement/GetReviewerTransactions");
+                _transactions = result.ToList();
+
+            }
+        }
     }
 }
-*@

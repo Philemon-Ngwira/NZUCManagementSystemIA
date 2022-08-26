@@ -111,7 +111,7 @@
         }
         else
         {
-            <MudDatePicker Label="Select Date Issued" @bind-Date="date" DisableToolbar="true" Variant="Variant.Outlined" Margin="Margin.Dense" />
+            <MudDatePicker Label="Select Date Issued" @bind-Date="Transaction.DateIssued" DisableToolbar="true" Variant="Variant.Outlined" Margin="Margin.Dense" />
             <MudButton ButtonType="ButtonType.Reset" Color="Color.Error" Variant="Variant.Filled" EndIcon="@Icons.Filled.Cancel" OnClick="CancelClose">Cancel</MudButton>
             <MudButton ButtonType="ButtonType.Submit" Color="Color.Success" Variant="Variant.Filled" EndIcon="@Icons.Filled.AddTask" OnClick="GrantClose">Granted/Close</MudButton>
         }
@@ -123,19 +123,69 @@
     [Parameter] public ReviewTransactionTable Transaction { get; set; } = new();
     [Inject] IGenericRepositoryService _genericRepositoryService { get; set; }
 
+    [Inject] ISnackbar Snackbar { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
         await GetStatuses();
     }
 
-    private void GrantClose()
+    public async Task GrantClose()
     {
-        Transaction.DateIssued = date;
+        
 
         ReviewTransactionTable = Transaction;
-        Submit();
+        if (ReviewTransactionTable.Employee != null)
+        {
+            ReviewTransactionTable.EmployeeId = ReviewTransactionTable.Employee.Id;
+            ReviewTransactionTable.DepartmentId = ReviewTransactionTable.Employee.DepartmentId;
+            TransactionTable.EmployeeId = ReviewTransactionTable.EmployeeId;
+
+        }
+        ReviewTransactionTable.PaymentMethodId = ReviewTransactionTable.PaymentMethod.Id;
+        ReviewTransactionTable.PaymentTypeId = ReviewTransactionTable.PaymentType.Id;
+        ReviewTransactionTable.ReviewerId = ReviewTransactionTable.Reviewer.Id;
+        ReviewTransactionTable.Status = ReviewTransactionTable.StatusNavigation.ID;
+        if (ReviewTransactionTable.Employee == null)
+        {
+            ReviewTransactionTable.DepartmentId = ReviewTransactionTable.Department.Id;
+        }
+        //Email
+        if (ReviewTransactionTable.Employee != null)
+        {
+            var body = "Transaction Made by:" + ReviewTransactionTable.Reviewer.Employee.EmployeeName + "," + "Payment Method:" + ReviewTransactionTable.PaymentMethod.PaymentMethod + ","
+                      + "Amount : " + "ZMW" + ReviewTransactionTable.Amount + "," + "Payed To:" + ReviewTransactionTable.Employee.EmployeeName
+                       + "," + "Reason For Payemnt:" + ReviewTransactionTable.Reason + "," + "Date Paid:" + ReviewTransactionTable.DateIssued;
+            email.EmailBody = body.ToString();
+        }
+        else if (ReviewTransactionTable.Employee == null)
+        {
+            var body = "Transaction Made by:" + ReviewTransactionTable.Reviewer.Employee.EmployeeName + "," + "Payment Method:" + ReviewTransactionTable.PaymentMethod.PaymentMethod + ","
+                      + "Amount : " + "ZMW" + ReviewTransactionTable.Amount + "," + "Payed To:" + ReviewTransactionTable.Department.DepartmentName
+                       + "," + "Reason For Payemnt:" + ReviewTransactionTable.Reason + "," + "Date Paid:" + ReviewTransactionTable.DateIssued; ;
+            email.EmailBody = body.ToString();
+        }
+
+        CFOMail = "ngwiram@nzu.adventist.org";
+        email.EmailSubject = ReviewTransactionTable.PaymentType.PaymentType1;
+        email.To = CFOMail;
+
+        //Nulling Virtual Objects
+        ReviewTransactionTable.Employee = null;
+        ReviewTransactionTable.PaymentMethod = null;
+        ReviewTransactionTable.Reviewer = null;
+        ReviewTransactionTable.Department = null;
+        ReviewTransactionTable.StatusNavigation = null;
+        ReviewTransactionTable.PaymentType = null;
+        var deleteId = ReviewTransactionTable.id;
+        await Http.DeleteAsync($"api/NZUCManagement/DeleteReviewTransaction/{deleteId}");
+        MailingServiceClient.SendMailAsync("api/Mailing/SendEmail", email);
+        SavePermanentTransaction();
+        Snackbar.Add("Transaction Closed !", Severity.Success);
+        MudDialog.Close();
+        Navigation.NavigateTo("/Pages/Dashboards/Reviewer/ReviewerDashboard", forceLoad: true);
     }
-    private void CancelClose()
+    public void CancelClose()
     {
         ReviewTransactionTable = Transaction;
         Canceled();

@@ -20,7 +20,7 @@
                       AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
     <HeaderContent>
-        <MudTh><MudTableSortLabel SortLabel="ID_field" T="ReviewTransactionTable">Id</MudTableSortLabel></MudTh>
+        @*<MudTh><MudTableSortLabel SortLabel="ID_field" T="ReviewTransactionTable">Id</MudTableSortLabel></MudTh>*@
         <MudTh><MudTableSortLabel SortLabel="Amount_field" T="ReviewTransactionTable">Amount</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortLabel="PaymentMethod_field" T="ReviewTransactionTable">Payment Method</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortLabel="PaymentType_field" T="ReviewTransactionTable">Payment Type</MudTableSortLabel></MudTh>
@@ -29,7 +29,7 @@
 
     </HeaderContent>
     <RowTemplate>
-        <MudTd DataLabel="Id">@context.id</MudTd>
+        @*<MudTd DataLabel="Id">@context.id</MudTd>*@
         <MudTd DataLabel="Amount">@context.Amount</MudTd>
         <MudTd DataLabel="Payment Method">@context.PaymentMethod.PaymentMethod</MudTd>
         <MudTd DataLabel="Payment Type">@context.PaymentType.PaymentType1</MudTd>

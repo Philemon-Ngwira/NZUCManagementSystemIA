@@ -33,13 +33,13 @@ namespace NZUCManagementSystemIA.Client.Pages.Dashboards.Reviewer
         protected int totalItems = 0;
         protected MudTable<ReviewTransactionTable> table;
         protected IEnumerable<ReviewTransactionTable> PagedData;
-        [Inject] NavigationManager Navigation { get; set; }
-        [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+        [Inject]protected NavigationManager Navigation { get; set; }
+        [CascadingParameter] protected MudDialogInstance MudDialog { get; set; }
         [Inject] IGenericRepositoryService _genericRepositoryService { get; set; }
         [Inject] IDialogService Dialog { get; set; }
         [Inject] ISnackbar Snackbar { get; set; }
-        [Inject] IMailingServiceClient MailingServiceClient { get; set; }
-        [Inject] HttpClient Http { get; set; }
+        [Inject] protected IMailingServiceClient MailingServiceClient { get; set; }
+        [Inject] protected  HttpClient Http { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
@@ -62,7 +62,7 @@ namespace NZUCManagementSystemIA.Client.Pages.Dashboards.Reviewer
             OperatingIncomeExpenseName = "Income";
             totalOperatingIncome = _OperatingIncomeExpenses.Where(x => x.IncomeExpenseOperatingTypeNavigation.OperatingType1 == OperatingIncomeExpenseName).Sum(x => x.Amount);
             operatingIncomeDisplay = $"{totalOperatingIncome:n0}";
-            OperatingIncomeExpenseName = "Expense";
+            OperatingIncomeExpenseName = "Expenses";
             totalOperatingExpense = _OperatingIncomeExpenses.Where(x => x.IncomeExpenseOperatingTypeNavigation.OperatingType1 == OperatingIncomeExpenseName).Sum(x => x.Amount);
             operatingExpenseDisplay = $"{totalOperatingExpense:n0}";
         }
@@ -157,7 +157,11 @@ namespace NZUCManagementSystemIA.Client.Pages.Dashboards.Reviewer
 
             var dialog = Dialog.Show<ReviewerReviewTransactionPage>("", parameters, dialogOptions);
             var result = await dialog.Result;
-
+            if (!result.Cancelled)
+            {
+                ReviewTransactionTable = Transaction;
+                
+            }
         }
         protected void OnRowClicked(TableRowClickEventArgs<ReviewTransactionTable> tableRowClickEventArgs)
         {
@@ -165,60 +169,7 @@ namespace NZUCManagementSystemIA.Client.Pages.Dashboards.Reviewer
             OpenEditDialog(ReviewTransactionTable).GetAwaiter();
         }
 
-        protected async void Submit()
-        {
-            //Assigning Values
-            if (ReviewTransactionTable.Employee != null)
-            {
-                ReviewTransactionTable.EmployeeId = ReviewTransactionTable.Employee.Id;
-                ReviewTransactionTable.DepartmentId = ReviewTransactionTable.Employee.DepartmentId;
-                TransactionTable.EmployeeId = ReviewTransactionTable.EmployeeId;
-
-            }
-            ReviewTransactionTable.PaymentMethodId = ReviewTransactionTable.PaymentMethod.Id;
-            ReviewTransactionTable.PaymentTypeId = ReviewTransactionTable.PaymentType.Id;
-            ReviewTransactionTable.ReviewerId = ReviewTransactionTable.Reviewer.Id;
-            ReviewTransactionTable.Status = ReviewTransactionTable.StatusNavigation.ID;
-            if (ReviewTransactionTable.Employee == null)
-            {
-                ReviewTransactionTable.DepartmentId = ReviewTransactionTable.Department.Id;
-            }
-            //Email
-            if (ReviewTransactionTable.Employee != null)
-            {
-                var body = "Transaction Made by:" + ReviewTransactionTable.Reviewer.Employee.EmployeeName + "," + "Payment Method:" + ReviewTransactionTable.PaymentMethod.PaymentMethod + ","
-                          + "Amount : " + "ZMW" + ReviewTransactionTable.Amount + "," + "Payed To:" + ReviewTransactionTable.Employee.EmployeeName
-                           + "," + "Reason For Payemnt:" + ReviewTransactionTable.Reason + "," + "Date Paid:" + ReviewTransactionTable.DateIssued;
-                email.EmailBody = body.ToString();
-            }
-            else if (ReviewTransactionTable.Employee == null)
-            {
-                var body = "Transaction Made by:" + ReviewTransactionTable.Reviewer.Employee.EmployeeName + "," + "Payment Method:" + ReviewTransactionTable.PaymentMethod.PaymentMethod + ","
-                          + "Amount : " + "ZMW" + ReviewTransactionTable.Amount + "," + "Payed To:" + ReviewTransactionTable.Department.DepartmentName
-                           + "," + "Reason For Payemnt:" + ReviewTransactionTable.Reason + "," + "Date Paid:" + ReviewTransactionTable.DateIssued; ;
-                email.EmailBody = body.ToString();
-            }
-
-            CFOMail = "ngwiram@nzu.adventist.org";
-            email.EmailSubject = ReviewTransactionTable.PaymentType.PaymentType1;
-            email.To = CFOMail;
-
-            //Nulling Virtual Objects
-            ReviewTransactionTable.Employee = null;
-            ReviewTransactionTable.PaymentMethod = null;
-            ReviewTransactionTable.Reviewer = null;
-            ReviewTransactionTable.Department = null;
-            ReviewTransactionTable.StatusNavigation = null;
-            ReviewTransactionTable.PaymentType = null;
-            var deleteId = ReviewTransactionTable.id;
-            await Http.DeleteAsync($"api/NZUCManagement/DeleteReviewTransaction/{deleteId}");
-            MailingServiceClient.SendMailAsync("api/Mailing/SendEmail", email);
-            SavePermanentTransaction();
-            Snackbar.Add("Transaction Closed !", Severity.Success);
-            MudDialog.Close();
-            Navigation.NavigateTo("/Pages/Dashboards/Reviewer/ReviewerDashboard",forceLoad:true);
-
-        }
+    
         protected async void Canceled()
         {
             //check if Authorized != null
@@ -272,8 +223,9 @@ namespace NZUCManagementSystemIA.Client.Pages.Dashboards.Reviewer
             OperatingIncomeExpense.IncomeExpenseOperatingType = 2;
             OperatingIncomeExpense.DateMonth = ReviewTransactionTable.DateIssued;
             OperatingIncomeExpense.DepartmentId = ReviewTransactionTable.DepartmentId;
-            await _genericRepositoryService.SaveAllAsync("api/NZUCManagement/SavePermanentTransaction", TransactionTable);
             await _genericRepositoryService.SaveAllAsync("api/NZUCManagement/SaveOperatingIncomeExpense", OperatingIncomeExpense);
+            await _genericRepositoryService.SaveAllAsync("api/NZUCManagement/SavePermanentTransaction", TransactionTable);
+           
         }
 
         #region String Functions

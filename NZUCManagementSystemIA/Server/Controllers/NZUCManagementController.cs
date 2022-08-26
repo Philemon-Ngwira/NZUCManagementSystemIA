@@ -143,6 +143,13 @@ namespace NZUCManagementSystemIA.Server.Controllers
             var result = await NZUCRepo.SaveAsync(employee);
             return Ok(result);
         }
+
+        [HttpPost("SaveDepartment")]
+        public async Task<IActionResult> PostDepartmentAsync(Departments_Table dept)
+        {
+            var result = await NZUCRepo.SaveAsync(dept);
+            return Ok(result);
+        }
         [HttpPost("SavePermanentTransaction")]
         public async Task<IActionResult> PostPermanentTransactionAsync(TransactionTable employee)
         {

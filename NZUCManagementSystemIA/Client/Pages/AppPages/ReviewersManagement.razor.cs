@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using MudBlazor;
 using NZUCManagementSystemIA.Client.Interfaces;
 using NZUCManagementSystemIA.Client.Pages.AppPages.Dialogues;
 using NZUCManagementSystemIA.Shared.Models;
+using static System.Net.WebRequestMethods;
 
 namespace NZUCManagementSystemIA.Client.Pages.AppPages
 {
@@ -18,6 +20,8 @@ namespace NZUCManagementSystemIA.Client.Pages.AppPages
         [Inject] IGenericRepositoryService _genericRepositoryService { get; set; }
         [Inject] ISnackbar Snackbar { get; set; }
         [Inject] IDialogService Dialog { get; set; }
+        [Inject] HttpClient Http { get; set; }
+        [Inject] NavigationManager NavigationManager { get; set; }
         protected MudTable<ReviewersTable> table;
         protected string searchString;
         protected int totalitems;
@@ -110,7 +114,14 @@ namespace NZUCManagementSystemIA.Client.Pages.AppPages
             Reviewer.Employee = null;
             await _genericRepositoryService.SaveAllAsync("api/NZUCManagement/SaveReviewer", Reviewer);
             Snackbar.Add("Successfully Saved", Severity.Success);
+            NavigationManager.NavigateTo("Pages/AppPages/ReviewersManagement", forceLoad: true);
 
+        }
+        protected async void DeleteReviewer(int id)
+        {
+            await Http.DeleteAsync($"api/NZUCManagement/DeleteOperatingIncomeExp/{id}");
+            Snackbar.Add("Successfully Deleted", Severity.Error);
+            NavigationManager.NavigateTo("Pages/AppPages/ReviewersManagement", forceLoad: true);
         }
         #endregion
 
